@@ -63,6 +63,17 @@ anterior para ver o que ele muda no traçado:
 
 Fontes, critérios de validação e detalhes de cada passo: **[docs/roteiro.md](docs/roteiro.md)**.
 
+## Atlas do Sudeste
+
+A Fase 1 começa pelo Sudeste. Cada camada de dados vira uma figura e entra no mapa interativo,
+que mostra tudo junto, com zoom e camadas que ligam e desligam (`pixi run atlas`).
+
+<table>
+<tr>
+<td align="center" width="33%"><a href="docs/img/atlas/01_base.png"><img src="docs/img/atlas/01_base.png" alt="Mapa base do Sudeste: estados e 1.668 municípios"></a><br><sub><b>1 · Mapa base</b><br>4 estados, 1.668 municípios, 84,8 milhões de habitantes</sub></td>
+</tr>
+</table>
+
 ## Como funciona
 
 O modelo é hierárquico: cada camada resolve um problema bem definido e alimenta a de cima.
@@ -97,7 +108,8 @@ pixi install                    # cria o ambiente (≈ 3,5 GB, uma vez)
 pixi run test                   # testes
 pixi run trembr --help          # linha de comando
 pixi run trembr dados catalogo  # as fontes de dados e o status de cada uma
-pixi run dados-ibge             # municípios + Censo 2022 → data/processed/ibge
+pixi run dados-base             # mapa base do IBGE: país, UFs, municípios, Censo 2022
+pixi run atlas                  # atlas: figuras + mapa interativo → resultados/atlas/sudeste
 pixi run estudo-sp-rj           # corredor + greide SP–RJ → resultados/sp_rj_as350
 pixi run -e nb lab              # JupyterLab, com lonboard para mapas grandes
 ```

@@ -1,0 +1,24 @@
+# Regiões de estudo: quais UFs entram e como recortar rasters e vetores em volta delas.
+#
+# A Fase 1 (dados) começa pelo Sudeste; o Brasil inteiro vem depois com o mesmo código
+# (decisão de 2026-11-22; ver docs/roteiro.md).
+
+# Partes de polígono a mais desta distância do continente são ilhas oceânicas e ficam fora do
+# recorte: Trindade e Martim Vaz (ES, ~1.100 km da costa), Fernando de Noronha (PE, ~350 km),
+# São Pedro e São Paulo (PE, ~1.000 km). Ilhas costeiras (Ilha Grande, Ilhabela, Vitória)
+# ficam a menos de 20 km e são mantidas.
+ilhas_oceanicas_km: 150
+
+regioes:
+  sudeste:
+    nome: Sudeste
+    ufs: [SP, RJ, MG, ES]
+    # Margem em volta das UFs: corredores podem cruzar divisas (SP–Curitiba, BH–Brasília,
+    # Rio–Salvador) e o A* precisa do relevo de fora para não "bater na parede" da borda.
+    margem_km: 50
+
+  brasil:
+    nome: Brasil
+    ufs: [RO, AC, AM, RR, PA, AP, TO, MA, PI, CE, RN, PB, PE, AL, SE, BA,
+          MG, ES, RJ, SP, PR, SC, RS, MS, MT, GO, DF]
+    margem_km: 20

@@ -50,18 +50,40 @@ def dem(
     console.print(f"[green]ok[/] {copernicus.ler_bbox(valores, produto)}")
 
 
-@dados.command("ibge")
-def ibge(forcar: bool = typer.Option(False, help="Baixar de novo mesmo com cache")) -> None:
-    """Malha municipal + população do Censo 2022 → GeoParquet."""
+@dados.command("base")
+def base(forcar: bool = typer.Option(False, help="Baixar de novo mesmo com cache")) -> None:
+    """Mapa base do IBGE: país, UFs e municípios (+ população do Censo 2022) → GeoParquet."""
     import geopandas as gpd
 
-    from trembr.fontes.ibge import preparar_municipios
+    from trembr.atlas.estilo import fmt_int
+    from trembr.fontes.ibge import preparar_base
 
-    caminho = preparar_municipios(forcar=forcar)
-    gdf = gpd.read_parquet(caminho)
+    arquivos = preparar_base(forcar=forcar)
+    mun = gpd.read_parquet(arquivos["municipios"])
+    ufs = gpd.read_parquet(arquivos["ufs"])
     console.print(
-        f"[green]ok[/] {caminho} — {len(gdf)} municípios, {int(gdf['populacao_2022'].sum()):,} habitantes"
+        f"[green]ok[/] {len(ufs)} UFs, {fmt_int(len(mun))} municípios, "
+        f"{fmt_int(mun['populacao_2022'].sum())} habitantes → {arquivos['ufs'].parent}"
     )
+
+
+@app.command("atlas")
+def atlas(
+    regiao: str = typer.Option("sudeste", help="Região em config/regioes.yaml"),
+    abrir: bool = typer.Option(False, help="Abrir o mapa interativo no navegador ao final"),
+) -> None:
+    """Atlas da Fase 1: uma figura PNG por camada + mapa interativo (index.html)."""
+    from trembr.atlas.montar import montar_atlas
+
+    console.print(f"Atlas · {regiao}")
+    figuras, html = montar_atlas(regiao, log=console.print)
+    for f in figuras:
+        console.print(f"[green]figura:[/] {f}")
+    console.print(f"[green]mapa interativo:[/] {html}")
+    if abrir:
+        import webbrowser
+
+        webbrowser.open(html.as_uri())
 
 
 @estudo.command("sp-rj")

@@ -24,6 +24,9 @@ identificadores de domínio em português.
 - `tracado/perfil.py` — greide ótimo por programação dinâmica, estado (cota, rampa).
 - `tracado/corredor.py` — A* 16 direções em numba.
 - `terreno/superficie_custo.py` — proxy de custo para o corredor (não calibrado).
+- `regiao.py` + `config/regioes.yaml` — regiões de estudo (Sudeste primeiro), recorte com margem em metros.
+- `atlas/` — figura PNG por camada + mapa interativo (MapLibre, HTML único). Camada nova = módulo
+  com `ID`, `NOME`, `COMANDO`, `disponivel`, `figura`, `web`, registrado em `atlas/montar.py`.
 - Camadas `demanda/`, `rede/`, `operacao/`, `avaliacao/` têm só o método planejado na docstring.
 
 ## Roteiro (docs/roteiro.md)

@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from trembr.paths import CATALOGO
 
 Camada = Literal[
+    "base",
     "terreno",
     "geologia",
     "hidrografia",

@@ -1,4 +1,4 @@
-"""IBGE: malha municipal + população do Censo 2022 (semente da camada de demanda)."""
+"""IBGE: mapa base (país, UFs, municípios) + população do Censo 2022."""
 
 from __future__ import annotations
 
@@ -13,10 +13,13 @@ from trembr.crs import SIRGAS2000
 from trembr.paths import BRUTOS, PROCESSADOS, garantir
 
 URL_POPULACAO = "https://apisidra.ibge.gov.br/values/t/4709/n6/all/v/93/p/2022"
-URL_MALHA = (
+_URL_MALHAS = (
     "https://servicodados.ibge.gov.br/api/v3/malhas/paises/BR"
-    "?formato=application/vnd.geo+json&qualidade=intermediaria&intrarregiao=municipio"
+    "?formato=application/vnd.geo+json&qualidade=intermediaria"
 )
+URL_MALHA_PAIS = _URL_MALHAS
+URL_MALHA_UF = _URL_MALHAS + "&intrarregiao=UF"
+URL_MALHA = _URL_MALHAS + "&intrarregiao=municipio"
 LICENCA = "IBGE — dados públicos (Lei de Acesso à Informação); citar a fonte"
 
 UF_SIGLA = {
@@ -26,6 +29,19 @@ UF_SIGLA = {
     41: "PR", 42: "SC", 43: "RS",
     50: "MS", 51: "MT", 52: "GO", 53: "DF",
 }  # fmt: skip
+
+UF_NOME = {
+    "RO": "Rondônia", "AC": "Acre", "AM": "Amazonas", "RR": "Roraima", "PA": "Pará",
+    "AP": "Amapá", "TO": "Tocantins", "MA": "Maranhão", "PI": "Piauí", "CE": "Ceará",
+    "RN": "Rio Grande do Norte", "PB": "Paraíba", "PE": "Pernambuco", "AL": "Alagoas",
+    "SE": "Sergipe", "BA": "Bahia", "MG": "Minas Gerais", "ES": "Espírito Santo",
+    "RJ": "Rio de Janeiro", "SP": "São Paulo", "PR": "Paraná", "SC": "Santa Catarina",
+    "RS": "Rio Grande do Sul", "MS": "Mato Grosso do Sul", "MT": "Mato Grosso",
+    "GO": "Goiás", "DF": "Distrito Federal",
+}  # fmt: skip
+
+# O primeiro dígito do código IBGE da UF é a grande região.
+REGIAO_POR_DIGITO = {1: "Norte", 2: "Nordeste", 3: "Sudeste", 4: "Sul", 5: "Centro-Oeste"}
 
 
 def _baixar(url: str, destino: Path, fonte_id: str, forcar: bool) -> Path:
@@ -55,7 +71,8 @@ def preparar_municipios(*, forcar: bool = False) -> Path:
     pop = pd.DataFrame(
         {
             "cod_ibge": pop["D1C"].astype(int),
-            "nome": pop["D1N"].str.rsplit(" (", n=1).str[0],
+            # o SIDRA escreve "Ariquemes - RO": a UF vai para a coluna própria
+            "nome": pop["D1N"].str.replace(r" - [A-Z]{2}$", "", regex=True),
             "populacao_2022": pd.to_numeric(pop["V"], errors="coerce").astype("Int64"),
         }
     )
@@ -72,3 +89,30 @@ def preparar_municipios(*, forcar: bool = False) -> Path:
     destino = garantir(PROCESSADOS / "ibge") / "municipios_2022.parquet"
     gdf[["cod_ibge", "nome", "uf", "populacao_2022", "geometry"]].to_parquet(destino)
     return destino
+
+
+def preparar_base(*, forcar: bool = False) -> dict[str, Path]:
+    """Mapa base: contorno do país, UFs e municípios (GeoParquet em SIRGAS 2000)."""
+    pasta = garantir(BRUTOS / "ibge")
+    saida = garantir(PROCESSADOS / "ibge")
+
+    arq_pais = _baixar(URL_MALHA_PAIS, pasta / "malha_pais.geojson", "ibge_malha_uf", forcar)
+    pais = gpd.read_file(arq_pais).set_crs(SIRGAS2000, allow_override=True)
+    pais = gpd.GeoDataFrame({"nome": ["Brasil"]}, geometry=[pais.union_all()], crs=SIRGAS2000)
+    pais.to_parquet(saida / "pais.parquet")
+
+    arq_ufs = _baixar(URL_MALHA_UF, pasta / "malha_ufs.geojson", "ibge_malha_uf", forcar)
+    ufs = gpd.read_file(arq_ufs).set_crs(SIRGAS2000, allow_override=True)
+    ufs["cod_uf"] = ufs["codarea"].astype(int)
+    ufs["uf"] = ufs["cod_uf"].map(UF_SIGLA)
+    ufs["nome"] = ufs["uf"].map(UF_NOME)
+    ufs["regiao"] = (ufs["cod_uf"] // 10).map(REGIAO_POR_DIGITO)
+    if ufs[["uf", "nome", "regiao"]].isna().any().any() or len(ufs) != 27:
+        raise RuntimeError(f"malha de UFs inesperada: {len(ufs)} feições")
+    ufs[["cod_uf", "uf", "nome", "regiao", "geometry"]].to_parquet(saida / "ufs.parquet")
+
+    return {
+        "pais": saida / "pais.parquet",
+        "ufs": saida / "ufs.parquet",
+        "municipios": preparar_municipios(forcar=forcar),
+    }

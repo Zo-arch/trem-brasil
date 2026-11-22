@@ -83,7 +83,8 @@ nb = { features = ["nb"], solve-group = "padrao" }
 test = "pytest"
 lint = "ruff check src tests"
 fmt = "ruff format src tests"
-dados-ibge = "trembr dados ibge"
+dados-base = "trembr dados base"
+atlas = "trembr atlas"
 estudo-sp-rj = "trembr estudo sp-rj"
 
 [tool.pixi.feature.nb.tasks]

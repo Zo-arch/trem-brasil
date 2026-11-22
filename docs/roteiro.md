@@ -26,9 +26,18 @@ Reunir, com proveniência, tudo o que o otimizador vai precisar, num formato com
 para vetores, COG para rasters, SIRGAS 2000. Cada fonte entra em `data/catalogo.yaml` e ganha
 um módulo em `src/trembr/fontes/`.
 
+**Decisões (2026-11-22):**
+- **Sudeste primeiro** (SP, RJ, MG, ES, com 50 km de margem); o resto do país depois, com o
+  mesmo código. As regiões ficam em `config/regioes.yaml`.
+- Estradas e ferrovias existentes servem para três coisas: **contexto** no mapa, **atalho** no
+  traçado (andar ao lado de uma faixa já aberta custa menos) e **concorrência** (tempo de carro e
+  de ônibus contra o trem). Reaproveitar trilho existente está fora.
+- Cada camada sai no **atlas**: uma figura PNG e uma entrada no mapa interativo
+  (`pixi run atlas` → `resultados/atlas/<região>/index.html`).
+
 | Camada | O que | Fontes (ids do catálogo) | Estado |
 |---|---|---|---|
-| Mapa base | país, UFs, municípios | `ibge_malha_municipal` | ✅ municípios |
+| Mapa base | país, UFs, municípios | `ibge_malha_uf`, `ibge_malha_municipal` | ✅ |
 | Relevo | mosaico nacional em 90 m; 30 m sob demanda dentro do corredor | `copernicus_glo90`, `copernicus_glo30`, `anadem` | ✅ Copernicus por recorte |
 | Validação do relevo | erro vertical de cada DEM contra referências de nível | `ibge_rede_altimetrica`, `fabdem` | |
 | Cidades e população | população, PIB, hierarquia urbana, arranjos populacionais | `ibge_censo2022_pop`, `ibge_pib_municipal`, `ibge_regic` | ✅ população |

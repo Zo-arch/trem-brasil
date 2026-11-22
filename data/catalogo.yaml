@@ -148,9 +148,20 @@ fontes:
     status: implementado
     confirmado: true
 
+  - id: ibge_malha_uf
+    nome: Malha de UFs e contorno do país (API de malhas v3)
+    camada: base
+    provedor: IBGE
+    url: https://servicodados.ibge.gov.br/api/v3/malhas/paises/BR?intrarregiao=UF
+    licenca: Pública
+    resolucao: qualidade intermediária
+    uso: Mapa base do atlas; recorte das regiões de estudo (config/regioes.yaml)
+    status: implementado
+    confirmado: true
+
   - id: ibge_malha_municipal
     nome: Malha municipal (API de malhas v3)
-    camada: demanda
+    camada: base
     provedor: IBGE
     url: https://servicodados.ibge.gov.br/api/v3/malhas/paises/BR
     licenca: Pública
