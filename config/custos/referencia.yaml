@@ -1,7 +1,7 @@
 # Modelo de custos unitários de implantação (via dupla).
 #
 # STATUS: PLACEHOLDER. Estes números são ORDEM DE GRANDEZA para o otimizador funcionar.
-# NÃO citar custos totais calculados com eles. Calibração planejada (docs/roteiro.md, M2):
+# NÃO citar custos totais calculados com eles. Calibração planejada (docs/roteiro.md, Fase 2 · v6):
 #   - SICRO/DNIT (custos unitários de terraplenagem e obras de arte, por UF e mês)
 #   - Banco Mundial (2014), "High-Speed Railways in China: A Look at Construction Costs"
 #   - Transit Costs Project (NYU Marron Institute)

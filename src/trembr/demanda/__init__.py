@@ -1,4 +1,4 @@
-"""Camada 1 — Demanda (planejado, marco M1).
+"""Camada 1 — Demanda (planejado, roteiro: Fase 3).
 
 Método previsto:
 1. Matriz OD observada: ANAC (passageiros por par de aeroportos) + ANTT (ônibus interestadual)

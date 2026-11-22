@@ -172,7 +172,7 @@ def figura_tracado(
         "Exploratório. DEM Copernicus GLO-90 (modelo de superfície: inclui copa de árvores). "
         "Custos unitários PLACEHOLDER — não citar valores em R$.\n"
         "Ainda fora do modelo: áreas urbanas, unidades de conservação, rios e geologia. "
-        "Traçado horizontal não otimizado (raio mínimo violado; marco M3)."
+        "Traçado horizontal não otimizado (raio mínimo violado; roteiro: Fase 2 · v5)."
     )
     fig.text(0.125, 0.035, aviso, fontsize=8.5, color=TINTA_2, va="top", linespacing=1.6)
 

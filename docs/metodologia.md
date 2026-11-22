@@ -6,11 +6,11 @@ contra o mundo real. As camadas de cima consomem os resultados das de baixo.
 
 ```
  0  DADOS        fontes abertas → data/raw (+ proveniência) → data/processed
- 1  DEMANDA      quantas pessoas viajariam entre cada par de cidades?         [planejado M1]
+ 1  DEMANDA      quantas pessoas viajariam entre cada par de cidades?         [planejado: Fase 3]
  2  CORREDOR     por onde, grosso modo, passar entre duas cidades?            [exploratório]
- 3  TRAÇADO      greide e geometria exatos; quantitativos e custo             [greide pronto; horizontal M3]
- 4  REDE         com orçamento B, quais linhas construir e em que ordem?      [planejado M4]
- 5  AVALIAÇÃO    tempo de viagem, custo-benefício, incerteza                  [planejado M5–M6]
+ 3  TRAÇADO      greide e geometria exatos; quantitativos e custo             [greide pronto; horizontal: Fase 2 · v5]
+ 4  REDE         com orçamento B, quais linhas construir e em que ordem?      [planejado: Fase 3]
+ 5  AVALIAÇÃO    tempo de viagem, custo-benefício, incerteza                  [planejado: Fases 2 e 4]
 ```
 
 ---
@@ -55,7 +55,7 @@ $$h = \sigma_w + \max(0,\, S - i_{max})\,L, \qquad c = c_{via} + \tfrac12[c_{sec
 - $S$: declividade da superfície suavizada;
 - $L$: comprimento característico.
 
-> **Não calibrado.** $w = 1{,}5$ km e $L = 1$ km são escolhas iniciais. Calibração (M2):
+> **Não calibrado.** $w = 1{,}5$ km e $L = 1$ km são escolhas iniciais. Calibração (Fase 2 · v6):
 > amostrar milhares de trechos, calcular o custo *ótimo* do greide em cada um (camada 3) e
 > ajustar o proxy por regressão. Daí em diante, o corredor herda a precisão do greide.
 
@@ -107,7 +107,7 @@ enumeração exaustiva em instâncias aleatórias (Hypothesis). Complexidade: $O
 
 Hoje a rota do raster é simplificada (Douglas–Peucker) e suavizada (Chaikin), e o raio de
 curvatura é **medido**, não imposto. No estudo SP–RJ o raio mínimo fica bem abaixo dos 7 km
-exigidos. **M3**: parametrizar o eixo por pontos de inflexão (PIs) com curvas circulares e
+exigidos. **Fase 2 · v5**: parametrizar o eixo por pontos de inflexão (PIs) com curvas circulares e
 clotoides ($R \ge R_{min}$) e otimizar os PIs junto com o greide. O greide ótimo é a função
 objetivo; a busca é metaheurística (CMA-ES ou NSGA-II via pymoo, para a fronteira custo × tempo),
 na linha de Jong & Schonfeld (2003) e Pu, Li & Schonfeld (2021).

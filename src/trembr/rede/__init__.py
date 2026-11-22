@@ -1,4 +1,4 @@
-"""Camada 4 — Rede (planejado, marco M4).
+"""Camada 4 — Rede (planejado, roteiro: Fase 3).
 
 Problema de projeto de rede (network design) como MILP em Pyomo + HiGHS:
 arcos candidatos = grafo de Gabriel/Delaunay entre cidades-polo; custo de cada arco vem do

@@ -11,7 +11,7 @@ cada célula com um proxy **coerente com o mesmo modelo de seção** usado no gr
    :math:`c = c_{via} + \tfrac12[c_{secao}(+h) + c_{secao}(-h)]`
    (meio aterro/viaduto, meio corte/túnel).
 
-Os parâmetros :math:`w` e :math:`L` NÃO estão calibrados. Calibração planejada (roteiro M2):
+Os parâmetros :math:`w` e :math:`L` NÃO estão calibrados. Calibração planejada (roteiro: Fase 2 · v6):
 regressão do custo ótimo do greide (programação dinâmica) contra :math:`\sigma` e :math:`S` em
 milhares de trechos amostrados. Até lá, o corredor é exploratório.
 """

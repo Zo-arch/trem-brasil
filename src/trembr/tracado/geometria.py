@@ -1,7 +1,7 @@
 """Geometria horizontal: suavização, reamostragem por estaca e raio de curvatura.
 
 Esta é a versão de triagem. O traçado horizontal definitivo (PIs + curvas circulares +
-clotoides com R >= R_min, otimizado junto com o greide) é o marco M3 do roteiro.
+clotoides com R >= R_min, otimizado junto com o greide) é a Fase 2 · v5 do roteiro.
 """
 
 from __future__ import annotations
