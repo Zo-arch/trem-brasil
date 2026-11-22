@@ -66,6 +66,7 @@ matplotlib = "*"
 pytest = "*"
 hypothesis = "*"
 ruff = "*"
+openpyxl = ">=3.1.5,<4"
 
 [tool.pixi.pypi-dependencies]
 trembr = { path = ".", editable = true }

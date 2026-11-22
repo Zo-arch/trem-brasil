@@ -38,6 +38,8 @@ class CamadaWeb:
     visivel: bool = True
     popup: dict[str, str] = field(default_factory=dict)  # campo → rótulo
     titulo_popup: str | None = None  # campo usado como título do popup
+    ordem: int = 20  # ordem de desenho: 0 terra, 10 rasters, 20–40 vetores, 50 divisas, 60 pontos
+    no_painel: bool = True  # False = camada fixa, sem alternador
     contorno: dict | None = None  # "paint" de uma camada de linha extra (o fill-opacity apaga o
     # contorno nativo do MapLibre); liga e desliga junto com a camada
 
@@ -170,8 +172,9 @@ map.on("load", () => {
     return grupos[nome];
   };
   alternador(["ruas"], "Ruas e nomes de lugares", "#e9e7e1", false, grupo("Fundo"));
+  for (const c of CAMADAS) if (c.no_painel) grupo(c.grupo);  // grupos na ordem do atlas
 
-  for (const c of CAMADAS) {
+  for (const c of [...CAMADAS].sort((a, b) => a.ordem - b.ordem)) {
     const layout = { visibility: c.visivel ? "visible" : "none" };
     if (c.tipo === "raster") {
       map.addSource(c.id, { type: "image", url: c.imagem, coordinates: c.cantos });
@@ -192,7 +195,7 @@ map.on("load", () => {
       map.on("mouseenter", c.id, () => map.getCanvas().style.cursor = "pointer");
       map.on("mouseleave", c.id, () => map.getCanvas().style.cursor = "");
     }
-    alternador(c.contorno ? [c.id, c.id + "-contorno"] : [c.id], c.nome, c.cor, c.visivel, grupo(c.grupo));
+    if (c.no_painel) alternador(c.contorno ? [c.id, c.id + "-contorno"] : [c.id], c.nome, c.cor, c.visivel, grupo(c.grupo));
   }
 });
 </script>

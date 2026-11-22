@@ -38,7 +38,7 @@ um módulo em `src/trembr/fontes/`.
 | Camada | O que | Fontes (ids do catálogo) | Estado |
 |---|---|---|---|
 | Mapa base | país, UFs, municípios | `ibge_malha_uf`, `ibge_malha_municipal` | ✅ |
-| Relevo | mosaico nacional em 90 m; 30 m sob demanda dentro do corredor | `copernicus_glo90`, `copernicus_glo30`, `anadem` | ✅ Copernicus por recorte |
+| Relevo | mosaico da região em 90 m; 30 m sob demanda dentro do corredor | `copernicus_glo90`, `copernicus_glo30`, `anadem` | ✅ Sudeste em 90 m (ANADEM na v4) |
 | Validação do relevo | erro vertical de cada DEM contra referências de nível | `ibge_rede_altimetrica`, `fabdem` | |
 | Cidades e população | população, PIB, hierarquia urbana, arranjos populacionais | `ibge_censo2022_pop`, `ibge_pib_municipal`, `ibge_regic` | ✅ população |
 | Uso do solo | mancha urbana, água, floresta | `mapbiomas` | |

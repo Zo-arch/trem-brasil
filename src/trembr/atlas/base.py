@@ -45,16 +45,18 @@ def web(regiao: Regiao) -> list[CamadaWeb]:
     ufs = ufs_brasil().copy()
     ufs["na_regiao"] = ufs["uf"].isin(regiao.ufs)
     mun = municipios(regiao)
+    gj_ufs = para_geojson(ufs, ["uf", "nome", "na_regiao"], tolerancia_m=500)
     return [
         CamadaWeb(
-            id="ufs",
-            nome="Estados",
+            id="terra",
+            nome="Terra",
             grupo=NOME,
             tipo="fill",
             pintura={"fill-color": ["case", ["get", "na_regiao"], estilo.TERRA, estilo.TERRA_FORA]},
-            contorno={"line-color": estilo.DIVISA, "line-width": 1.4},
             cor=estilo.TERRA_FORA,
-            geojson=para_geojson(ufs, ["uf", "nome", "na_regiao"], tolerancia_m=500),
+            geojson=gj_ufs,
+            ordem=0,
+            no_painel=False,
         ),
         CamadaWeb(
             id="municipios",
@@ -69,5 +71,16 @@ def web(regiao: Regiao) -> list[CamadaWeb]:
             ),
             popup={"uf": "UF", "populacao_2022": "População (2022)", "cod_ibge": "Código IBGE"},
             titulo_popup="nome",
+            ordem=30,
+        ),
+        CamadaWeb(
+            id="divisas",
+            nome="Divisas estaduais",
+            grupo=NOME,
+            tipo="line",
+            pintura={"line-color": estilo.DIVISA, "line-width": 1.4},
+            cor=estilo.DIVISA,
+            geojson=gj_ufs,
+            ordem=50,
         ),
     ]

@@ -44,7 +44,7 @@ UF_NOME = {
 REGIAO_POR_DIGITO = {1: "Norte", 2: "Nordeste", 3: "Sudeste", 4: "Sul", 5: "Centro-Oeste"}
 
 
-def _baixar(url: str, destino: Path, fonte_id: str, forcar: bool) -> Path:
+def baixar(url: str, destino: Path, fonte_id: str, forcar: bool) -> Path:
     if destino.exists() and not forcar:
         return destino
     with httpx.Client(
@@ -60,10 +60,8 @@ def _baixar(url: str, destino: Path, fonte_id: str, forcar: bool) -> Path:
 def preparar_municipios(*, forcar: bool = False) -> Path:
     """GeoParquet com código IBGE, nome, UF, população 2022 e polígono de cada município."""
     pasta = garantir(BRUTOS / "ibge")
-    arq_pop = _baixar(
-        URL_POPULACAO, pasta / "sidra_4709_pop2022.json", "ibge_censo2022_pop", forcar
-    )
-    arq_malha = _baixar(
+    arq_pop = baixar(URL_POPULACAO, pasta / "sidra_4709_pop2022.json", "ibge_censo2022_pop", forcar)
+    arq_malha = baixar(
         URL_MALHA, pasta / "malha_municipios.geojson", "ibge_malha_municipal", forcar
     )
 
@@ -96,12 +94,12 @@ def preparar_base(*, forcar: bool = False) -> dict[str, Path]:
     pasta = garantir(BRUTOS / "ibge")
     saida = garantir(PROCESSADOS / "ibge")
 
-    arq_pais = _baixar(URL_MALHA_PAIS, pasta / "malha_pais.geojson", "ibge_malha_uf", forcar)
+    arq_pais = baixar(URL_MALHA_PAIS, pasta / "malha_pais.geojson", "ibge_malha_uf", forcar)
     pais = gpd.read_file(arq_pais).set_crs(SIRGAS2000, allow_override=True)
     pais = gpd.GeoDataFrame({"nome": ["Brasil"]}, geometry=[pais.union_all()], crs=SIRGAS2000)
     pais.to_parquet(saida / "pais.parquet")
 
-    arq_ufs = _baixar(URL_MALHA_UF, pasta / "malha_ufs.geojson", "ibge_malha_uf", forcar)
+    arq_ufs = baixar(URL_MALHA_UF, pasta / "malha_ufs.geojson", "ibge_malha_uf", forcar)
     ufs = gpd.read_file(arq_ufs).set_crs(SIRGAS2000, allow_override=True)
     ufs["cod_uf"] = ufs["codarea"].astype(int)
     ufs["uf"] = ufs["cod_uf"].map(UF_SIGLA)

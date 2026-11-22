@@ -71,6 +71,7 @@ que mostra tudo junto, com zoom e camadas que ligam e desligam (`pixi run atlas`
 <table>
 <tr>
 <td align="center" width="33%"><a href="docs/img/atlas/01_base.png"><img src="docs/img/atlas/01_base.png" alt="Mapa base do Sudeste: estados e 1.668 municípios"></a><br><sub><b>1 · Mapa base</b><br>4 estados, 1.668 municípios, 84,8 milhões de habitantes</sub></td>
+<td align="center" width="33%"><a href="docs/img/atlas/02_relevo.png"><img src="docs/img/atlas/02_relevo.png" alt="Relevo do Sudeste com sombreamento; ponto mais alto no Pico da Bandeira"></a><br><sub><b>2 · Relevo</b><br>Copernicus 90 m; o ponto mais alto cai no Pico da Bandeira</sub></td>
 </tr>
 </table>
 

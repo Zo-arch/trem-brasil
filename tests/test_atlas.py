@@ -1,11 +1,15 @@
 """Região de estudo e utilidades do atlas (sem rede)."""
 
 import geopandas as gpd
+import numpy as np
 import pytest
+from matplotlib.colors import to_rgb
 from shapely.geometry import MultiPolygon, Point, box
 
 from trembr.atlas.estilo import fmt_dec, fmt_int
+from trembr.atlas.relevo import colorir
 from trembr.atlas.web import CamadaWeb, montar_html, para_geojson
+from trembr.graficos import MAR
 from trembr.regiao import Regiao, carregar_regiao, sem_ilhas_oceanicas
 
 
@@ -52,3 +56,16 @@ def test_geojson_leve_e_html(tmp_path):
     html = montar_html(regiao, [camada], tmp_path / "index.html").read_text(encoding="utf-8")
     assert "maplibre-gl@" in html and '"id":"a"' in html and "Atlas · Teste" in html
     assert "__CAMADAS__" not in html and "__LIMITES__" not in html
+
+
+def test_relevo_mar_sem_dado_e_terra():
+    z = np.array([[np.nan, 0.0], [500.0, 2500.0]])
+    rgba = colorir(z, 90.0, alfa=True)
+    assert rgba.shape == (2, 2, 4) and rgba.dtype == np.uint8
+    assert rgba[0, 0, 3] == 0 and (rgba[1, :, 3] == 255).all()  # sem dado = transparente
+    mar = (np.array(to_rgb(MAR)) * 255).round()
+    assert np.abs(rgba[0, 1, :3] - mar).max() <= 1  # cota 0 = mar
+    assert (
+        rgba[1, 0, :3].tolist() != rgba[1, 1, :3].tolist()
+    )  # altitudes diferentes, cores diferentes
+    assert colorir(z, 90.0).shape == (2, 2, 3)

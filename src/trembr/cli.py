@@ -67,6 +67,22 @@ def base(forcar: bool = typer.Option(False, help="Baixar de novo mesmo com cache
     )
 
 
+@dados.command("relevo")
+def relevo(
+    regiao: str = typer.Option("sudeste", help="Região em config/regioes.yaml"),
+    produto: str = typer.Option("glo90", help="glo90 (~90 m) ou glo30 (~30 m)"),
+    forcar: bool = typer.Option(False, help="Baixar de novo mesmo com cache"),
+) -> None:
+    """Mosaico do Copernicus DEM para a região inteira (+ margem), por streaming."""
+    from trembr.fontes import copernicus
+    from trembr.regiao import carregar_regiao
+
+    bbox = carregar_regiao(regiao).bbox()
+    n = len(copernicus.tiles_bbox(bbox))
+    console.print(f"{regiao}: até {n} tiles {produto} (oceano não tem tile)…")
+    console.print(f"[green]ok[/] {copernicus.ler_bbox(bbox, produto, forcar=forcar)}")
+
+
 @app.command("atlas")
 def atlas(
     regiao: str = typer.Option("sudeste", help="Região em config/regioes.yaml"),

@@ -64,14 +64,18 @@ def tiles_bbox(bbox: Bbox) -> list[tuple[int, int]]:
     ]
 
 
+def caminho_bbox(bbox: Bbox, produto: str = "glo90") -> Path:
+    """Onde fica (ou ficará) o mosaico em cache para este bbox."""
+    oeste, sul, leste, norte = bbox
+    return BRUTOS / "copernicus" / f"{produto}_{oeste:.3f}_{sul:.3f}_{leste:.3f}_{norte:.3f}.tif"
+
+
 def ler_bbox(bbox: Bbox, produto: str = "glo90", *, forcar: bool = False) -> Path:
     """Mosaico do DEM recortado no bbox, salvo como GeoTIFF comprimido (cache local)."""
     if produto not in PRODUTOS:
         raise ValueError(f"produto deve ser um de {list(PRODUTOS)}")
-    oeste, sul, leste, norte = bbox
-    destino = garantir(BRUTOS / "copernicus") / (
-        f"{produto}_{oeste:.3f}_{sul:.3f}_{leste:.3f}_{norte:.3f}.tif"
-    )
+    destino = caminho_bbox(bbox, produto)
+    garantir(destino.parent)
     if destino.exists() and not forcar:
         return destino
 

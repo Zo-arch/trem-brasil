@@ -15,9 +15,8 @@ matplotlib.use("Agg")
 import geopandas as gpd
 import matplotlib.patheffects as pe
 import matplotlib.pyplot as plt
-from shapely.geometry import box
 
-from trembr.crs import BRASIL_POLICONICA, SIRGAS2000
+from trembr.crs import BRASIL_POLICONICA
 from trembr.graficos import MAR, SUPERFICIE, TINTA, TINTA_2
 from trembr.regiao import Regiao, ufs_brasil
 
@@ -53,10 +52,12 @@ def fmt_dec(x: float, casas: int = 1) -> str:
 
 
 def extensao(regiao: Regiao) -> tuple[float, float, float, float]:
-    """(x_min, x_max, y_min, y_max) do recorte da região em CRS_MAPA."""
-    x0, y0, x1, y1 = (
-        gpd.GeoSeries([box(*regiao.bbox())], crs=SIRGAS2000).to_crs(CRS_MAPA).total_bounds
-    )
+    """(x_min, x_max, y_min, y_max) da região + margem, em CRS_MAPA.
+
+    É o retângulo da envoltória com margem medida em metros, que cabe dentro do recorte em graus
+    (``Regiao.bbox``) usado para baixar os rasters: as bordas do mosaico não aparecem.
+    """
+    x0, y0, x1, y1 = regiao.contorno(CRS_MAPA).buffer(regiao.margem_km * 1000).bounds
     return x0, x1, y0, y1
 
 
