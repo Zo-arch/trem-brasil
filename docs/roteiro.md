@@ -40,8 +40,8 @@ um módulo em `src/trembr/fontes/`.
 | Mapa base | país, UFs, municípios | `ibge_malha_uf`, `ibge_malha_municipal` | ✅ |
 | Relevo | mosaico da região em 90 m; 30 m sob demanda dentro do corredor | `copernicus_glo90`, `copernicus_glo30`, `anadem` | ✅ Sudeste em 90 m (ANADEM na v4) |
 | Validação do relevo | erro vertical de cada DEM contra referências de nível | `ibge_rede_altimetrica`, `fabdem` | |
-| Cidades e população | população, PIB, hierarquia urbana, arranjos populacionais | `ibge_censo2022_pop`, `ibge_pib_municipal`, `ibge_regic` | ✅ população |
-| Uso do solo | mancha urbana, água, floresta | `mapbiomas` | |
+| Cidades e população | sedes, população, PIB, hierarquia urbana, arranjos populacionais | `ibge_censo2022_pop`, `ibge_localidades`, `ibge_pib_municipal`, `ibge_regic` | ✅ |
+| Uso do solo | mancha urbana, água, floresta | `ibge_areas_urbanizadas`, `mapbiomas` | ✅ mancha urbana (IBGE 2022) |
 | Transporte existente | rodovias, ferrovias, estações, aeroportos | `osm_brasil`, `ontl_ferrovias`, DNIT/SNV (a catalogar) | |
 | Hidrografia | rios: cada travessia é uma ponte | `ana_bho` | |
 | Áreas protegidas | unidades de conservação, terras indígenas | `cnuc_ucs`, `funai_ti` | |
@@ -71,12 +71,13 @@ relativo, tempo de viagem), para mostrar o que cada ingrediente muda no traçado
 | v7 | + tempo de viagem | |
 
 **v2 — cidades.** O otimizador decide sozinho por quais cidades passar; nenhuma parada é imposta
-à mão. Estações candidatas são as cidades ao alcance do corredor; o custo entre duas candidatas
+à mão. Estações candidatas são as cidades do REGIC ao alcance do corredor (arranjo populacional
+ou município isolado, `cidades_regic.parquet`); o custo entre duas candidatas
 vem do A*; a escolha pesa a população atendida contra o custo de desviar. O peso entre "gente"
 e "custo" é varrido, gerando uma fronteira: de uma linha direta, sem paradas, até uma linha que
 atende todas as cidades grandes do caminho.
 
-**v3 — obstáculos.** Mancha urbana (MapBiomas): desapropriação cara, ou túnel. Rios (ANA):
+**v3 — obstáculos.** Mancha urbana (IBGE, Áreas Urbanizadas 2022): desapropriação cara, ou túnel. Rios (ANA):
 ponte obrigatória. Unidades de conservação de proteção integral e terras indígenas: barreira.
 Uso sustentável: custo extra de licenciamento.
 

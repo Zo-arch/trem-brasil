@@ -72,6 +72,7 @@ que mostra tudo junto, com zoom e camadas que ligam e desligam (`pixi run atlas`
 <tr>
 <td align="center" width="33%"><a href="docs/img/atlas/01_base.png"><img src="docs/img/atlas/01_base.png" alt="Mapa base do Sudeste: estados e 1.668 municípios"></a><br><sub><b>1 · Mapa base</b><br>4 estados, 1.668 municípios, 84,8 milhões de habitantes</sub></td>
 <td align="center" width="33%"><a href="docs/img/atlas/02_relevo.png"><img src="docs/img/atlas/02_relevo.png" alt="Relevo do Sudeste com sombreamento; ponto mais alto no Pico da Bandeira"></a><br><sub><b>2 · Relevo</b><br>Copernicus 90 m; o ponto mais alto cai no Pico da Bandeira</sub></td>
+<td align="center" width="33%"><a href="docs/img/atlas/03_cidades.png"><img src="docs/img/atlas/03_cidades.png" alt="Cidades do Sudeste por hierarquia urbana e população, com a mancha urbana"></a><br><sub><b>3 · Cidades</b><br>1.344 cidades do REGIC; as 5 metrópoles têm 49% da população</sub></td>
 </tr>
 </table>
 
@@ -110,6 +111,8 @@ pixi run test                   # testes
 pixi run trembr --help          # linha de comando
 pixi run trembr dados catalogo  # as fontes de dados e o status de cada uma
 pixi run dados-base             # mapa base do IBGE: país, UFs, municípios, Censo 2022
+pixi run trembr dados relevo     # relevo da região (Copernicus 90 m, ~0,5 GB)
+pixi run trembr dados cidades    # sedes, PIB, REGIC 2018, áreas urbanizadas 2022
 pixi run atlas                  # atlas: figuras + mapa interativo → resultados/atlas/sudeste
 pixi run estudo-sp-rj           # corredor + greide SP–RJ → resultados/sp_rj_as350
 pixi run -e nb lab              # JupyterLab, com lonboard para mapas grandes

@@ -83,6 +83,22 @@ def relevo(
     console.print(f"[green]ok[/] {copernicus.ler_bbox(bbox, produto, forcar=forcar)}")
 
 
+@dados.command("cidades")
+def cidades(forcar: bool = typer.Option(False, help="Baixar de novo mesmo com cache")) -> None:
+    """Sedes, PIB, hierarquia urbana (REGIC 2018) e áreas urbanizadas 2022 do IBGE."""
+    import geopandas as gpd
+
+    from trembr.atlas.estilo import fmt_int
+    from trembr.fontes.cidades import preparar_cidades
+
+    arq = preparar_cidades(forcar=forcar)
+    cid, reg = gpd.read_parquet(arq["cidades"]), gpd.read_parquet(arq["cidades_regic"])
+    console.print(
+        f"[green]ok[/] {fmt_int(len(cid))} municípios com sede, PIB e REGIC; "
+        f"{fmt_int(len(reg))} cidades do REGIC → {arq['cidades'].parent}"
+    )
+
+
 @app.command("atlas")
 def atlas(
     regiao: str = typer.Option("sudeste", help="Região em config/regioes.yaml"),

@@ -17,7 +17,7 @@ from rasterio.features import geometry_mask
 from rasterio.warp import Resampling, calculate_default_transform, reproject
 
 from trembr.atlas import estilo
-from trembr.atlas.web import CamadaWeb, imagem_data_uri
+from trembr.atlas.web import CamadaWeb, ladrilhos
 from trembr.fontes import copernicus
 from trembr.graficos import MAR, SUPERFICIE, TINTA
 from trembr.paths import INTERMEDIARIOS, garantir
@@ -174,11 +174,6 @@ def figura(regiao: Regiao, caminho: Path) -> Path:
 
 def web(regiao: Regiao) -> list[CamadaWeb]:
     r = reamostrado(regiao, "EPSG:3857", RES_WEB_M)
-    x0, x1, y0, y1 = r.extensao
-    para_lonlat = Transformer.from_crs("EPSG:3857", "EPSG:4326", always_xy=True)
-    cantos = [
-        list(para_lonlat.transform(x, y)) for x, y in ((x0, y1), (x1, y1), (x1, y0), (x0, y0))
-    ]
     return [
         CamadaWeb(
             id="relevo",
@@ -187,8 +182,7 @@ def web(regiao: Regiao) -> list[CamadaWeb]:
             tipo="raster",
             pintura={"raster-opacity": 0.9, "raster-fade-duration": 0},
             cor="#c9a378",
-            imagem=imagem_data_uri(colorir(r.dados, r.resolucao), "JPEG"),
-            cantos=cantos,
+            imagens=ladrilhos(colorir(r.dados, r.resolucao), r.transform, "JPEG"),
             ordem=10,
         )
     ]

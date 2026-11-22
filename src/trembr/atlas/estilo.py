@@ -29,7 +29,7 @@ HALO = [pe.withStroke(linewidth=3, foreground=SUPERFICIE)]
 
 LARGURA_POL = 12.0
 CABECALHO_POL = 0.95
-RODAPE_POL = 0.55
+RODAPE_POL = 0.7
 MARGEM_POL = 0.3
 
 
@@ -130,21 +130,19 @@ def fechar(m: Moldura, fontes: list[str], caminho: Path) -> Path:
             color=TINTA_2 if destaque else "#a3a199", alpha=0.9, path_effects=HALO,
         )  # fmt: skip
     _barra_escala(m.ax)
+    altura = m.fig.get_figheight()
     m.fig.text(
-        MARGEM_POL / LARGURA_POL,
-        0.22 / m.fig.get_figheight(),
-        "Fontes: " + "; ".join(fontes) + ".   Projeção policônica, SIRGAS 2000 (EPSG:5880).",
-        fontsize=8.5,
-        color=TINTA_2,
-    )
+        MARGEM_POL / LARGURA_POL, 0.36 / altura, "Fontes: " + "; ".join(fontes) + ".",
+        fontsize=8.5, color=TINTA_2,
+    )  # fmt: skip
     m.fig.text(
-        1 - MARGEM_POL / LARGURA_POL,
-        0.22 / m.fig.get_figheight(),
-        "trem-brasil · CC BY 4.0",
-        fontsize=8.5,
-        color=TINTA_2,
-        ha="right",
-    )
+        MARGEM_POL / LARGURA_POL, 0.14 / altura,
+        "Projeção policônica, SIRGAS 2000 (EPSG:5880).", fontsize=8.5, color=TINTA_2,
+    )  # fmt: skip
+    m.fig.text(
+        1 - MARGEM_POL / LARGURA_POL, 0.14 / altura, "trem-brasil · CC BY 4.0",
+        fontsize=8.5, color=TINTA_2, ha="right",
+    )  # fmt: skip
     caminho.parent.mkdir(parents=True, exist_ok=True)
     m.fig.savefig(caminho, dpi=150, facecolor=SUPERFICIE)
     plt.close(m.fig)

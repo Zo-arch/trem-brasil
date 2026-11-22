@@ -170,24 +170,47 @@ fontes:
     confirmado: true
 
   - id: ibge_pib_municipal
-    nome: PIB dos municípios (SIDRA tabela 5938)
+    nome: PIB dos municípios (SIDRA tabela 5938, variável 37, último ano publicado)
     camada: demanda
     provedor: IBGE
-    url: https://apisidra.ibge.gov.br/
+    url: https://apisidra.ibge.gov.br/values/t/5938/n6/all/v/37/p/last%201
     licenca: Pública
     uso: Renda como variável do modelo gravitacional e do valor do tempo
-    status: planejado
-    confirmado: false
+    status: implementado
+    confirmado: true
+    notas: Em nov/2026 o último ano é 2023; o PIB per capita usa a população do Censo 2022.
 
   - id: ibge_regic
-    nome: REGIC 2018 — Regiões de Influência das Cidades
+    nome: REGIC 2018 — Regiões de Influência das Cidades (hierarquia por município)
     camada: demanda
     provedor: IBGE
-    url: https://www.ibge.gov.br/geociencias/cartas-e-mapas/redes-geograficas.html
+    url: https://geoftp.ibge.gov.br/organizacao_do_territorio/divisao_regional/regioes_de_influencia_das_cidades/Regioes_de_influencia_das_cidades_2018_Resultados_definitivos/base_tabular/
     licenca: Pública
-    uso: Hierarquia urbana; escolha das cidades-polo candidatas a estação
-    status: planejado
-    confirmado: false
+    uso: Hierarquia urbana; a "cidade" do REGIC (arranjo ou município isolado) é a estação candidata
+    status: implementado
+    confirmado: true
+    notas: A mesma pasta tem REGIC2018_Ligacoes_entre_Cidades.xlsx (fluxos entre cidades), útil para a demanda.
+
+  - id: ibge_localidades
+    nome: Localidades do Brasil 2022 (sedes municipais e outras localidades)
+    camada: demanda
+    provedor: IBGE
+    url: https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/localidades/Localidades_do_Brasil/2022/
+    licenca: Pública
+    uso: Ponto da sede de cada município (não o centroide do polígono)
+    status: implementado
+    confirmado: true
+
+  - id: ibge_areas_urbanizadas
+    nome: Áreas Urbanizadas do Brasil 2022
+    camada: restricoes
+    provedor: IBGE
+    url: https://geoftp.ibge.gov.br/organizacao_do_territorio/tipologias_do_territorio/areas_urbanizadas_do_brasil/2022/
+    licenca: Pública
+    resolucao: mapeamento sobre imagens de 2022
+    uso: Mancha urbana; desapropriação ou túnel no traçado (Fase 2 · v3)
+    status: implementado
+    confirmado: true
 
   - id: ibge_ligacoes_rodoviarias
     nome: Ligações Rodoviárias e Hidroviárias

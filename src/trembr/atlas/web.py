@@ -16,6 +16,8 @@ from typing import Literal
 import geopandas as gpd
 import numpy as np
 import shapely
+from affine import Affine
+from pyproj import Transformer
 
 from trembr.crs import BRASIL_POLICONICA
 from trembr.regiao import Regiao
@@ -33,8 +35,7 @@ class CamadaWeb:
     pintura: dict  # propriedades "paint" do MapLibre
     cor: str  # amostra de cor no painel
     geojson: dict | None = None
-    imagem: str | None = None  # data URI
-    cantos: list[list[float]] | None = None  # [[lon, lat]] NO, NE, SE, SO
+    imagens: list[dict] | None = None  # [{"url": data URI, "cantos": [[lon, lat]] NO, NE, SE, SO}]
     visivel: bool = True
     popup: dict[str, str] = field(default_factory=dict)  # campo → rótulo
     titulo_popup: str | None = None  # campo usado como título do popup
@@ -72,6 +73,34 @@ def imagem_data_uri(rgb: np.ndarray, formato: Literal["JPEG", "PNG"] = "JPEG") -
     else:
         img.save(buf, "PNG", optimize=True)
     return f"data:image/{formato.lower()};base64," + base64.b64encode(buf.getvalue()).decode()
+
+
+def ladrilhos(
+    imagem: np.ndarray,
+    transform: Affine,
+    formato: Literal["JPEG", "PNG"] = "PNG",
+    max_px: int = 4096,
+) -> list[dict]:
+    """Corta uma imagem em EPSG:3857 em pedaços de até ``max_px`` (limite seguro de textura
+    WebGL) e devolve as fontes de imagem do MapLibre. Pedaços 100% transparentes são pulados."""
+    para_lonlat = Transformer.from_crs("EPSG:3857", WGS84, always_xy=True)
+    h, w = imagem.shape[:2]
+    ny, nx = -(-h // max_px), -(-w // max_px)
+    saida = []
+    for i in range(ny):
+        for j in range(nx):
+            r0, r1, c0, c1 = i * h // ny, (i + 1) * h // ny, j * w // nx, (j + 1) * w // nx
+            bloco = imagem[r0:r1, c0:c1]
+            if bloco.shape[-1] == 4 and not bloco[..., 3].any():
+                continue
+            x0, y0 = transform * (c0, r0)
+            x1, y1 = transform * (c1, r1)
+            cantos = [
+                list(para_lonlat.transform(x, y))
+                for x, y in ((x0, y0), (x1, y0), (x1, y1), (x0, y1))
+            ]
+            saida.append({"url": imagem_data_uri(bloco, formato), "cantos": cantos})
+    return saida
 
 
 def montar_html(regiao: Regiao, camadas: list[CamadaWeb], caminho: Path) -> Path:
@@ -176,13 +205,21 @@ map.on("load", () => {
 
   for (const c of [...CAMADAS].sort((a, b) => a.ordem - b.ordem)) {
     const layout = { visibility: c.visivel ? "visible" : "none" };
+    let ids = [c.id];
     if (c.tipo === "raster") {
-      map.addSource(c.id, { type: "image", url: c.imagem, coordinates: c.cantos });
-      map.addLayer({ id: c.id, type: "raster", source: c.id, paint: c.pintura, layout });
+      ids = c.imagens.map((img, i) => {
+        const id = `${c.id}-${i}`;
+        map.addSource(id, { type: "image", url: img.url, coordinates: img.cantos });
+        map.addLayer({ id, type: "raster", source: id, paint: c.pintura, layout });
+        return id;
+      });
     } else {
       map.addSource(c.id, { type: "geojson", data: c.geojson });
       map.addLayer({ id: c.id, type: c.tipo, source: c.id, paint: c.pintura, layout });
-      if (c.contorno) map.addLayer({ id: c.id + "-contorno", type: "line", source: c.id, paint: c.contorno, layout });
+      if (c.contorno) {
+        map.addLayer({ id: c.id + "-contorno", type: "line", source: c.id, paint: c.contorno, layout });
+        ids.push(c.id + "-contorno");
+      }
     }
     if (Object.keys(c.popup).length) {
       map.on("click", c.id, e => {
@@ -195,7 +232,7 @@ map.on("load", () => {
       map.on("mouseenter", c.id, () => map.getCanvas().style.cursor = "pointer");
       map.on("mouseleave", c.id, () => map.getCanvas().style.cursor = "");
     }
-    if (c.no_painel) alternador(c.contorno ? [c.id, c.id + "-contorno"] : [c.id], c.nome, c.cor, c.visivel, grupo(c.grupo));
+    if (c.no_painel) alternador(ids, c.nome, c.cor, c.visivel, grupo(c.grupo));
   }
 });
 </script>
