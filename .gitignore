@@ -1,0 +1,14 @@
+# ambiente
+.pixi/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+.ipynb_checkpoints/
+
+# dados e resultados (reproduzíveis pelo pipeline; o catálogo fica versionado)
+data/raw/
+data/interim/
+data/processed/
+resultados/

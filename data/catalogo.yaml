@@ -1,0 +1,250 @@
+# Catálogo de fontes de dados do estudo.
+# status: implementado = há fetcher em src/trembr/fontes; planejado = ainda não.
+# confirmado: true só quando URL e formato foram testados de verdade pelo projeto.
+fontes:
+  # ---------------------------------------------------------------- terreno
+  - id: copernicus_glo90
+    nome: Copernicus DEM GLO-90
+    camada: terreno
+    provedor: ESA / Airbus (espelho AWS Open Data)
+    url: https://copernicus-dem-90m.s3.amazonaws.com/
+    licenca: Copernicus DEM (uso livre com atribuição)
+    resolucao: 3" (~90 m)
+    uso: Triagem nacional de corredores
+    status: implementado
+    confirmado: true
+    notas: Modelo de superfície (DSM). Lido por streaming (COG); tiles nomeados pelo canto SW.
+
+  - id: copernicus_glo30
+    nome: Copernicus DEM GLO-30
+    camada: terreno
+    provedor: ESA / Airbus (espelho AWS Open Data)
+    url: https://copernicus-dem-30m.s3.amazonaws.com/
+    licenca: Copernicus DEM (uso livre com atribuição)
+    resolucao: 1" (~30 m)
+    uso: Greide dentro do corredor, enquanto o ANADEM não estiver integrado
+    status: implementado
+    confirmado: true
+    notas: DSM — copa de árvores enviesa a cota para cima em áreas florestadas.
+
+  - id: anadem
+    nome: ANADEM — Modelo Digital de Terreno da América do Sul
+    camada: terreno
+    provedor: UFRGS (HGE/IPH) e ANA
+    url: https://www.ufrgs.br/hge/download-anadem/
+    licenca: Aberta — confirmar termos na página
+    resolucao: 30 m
+    uso: DEM principal do traçado (terreno nu, sem viés de vegetação)
+    status: planejado
+    confirmado: false
+    notas: Laipelt et al. (2024), Remote Sensing 16(13):2321, doi:10.3390/rs16132321. Tiles MGRS em GeoTIFF; também no OpenTopography e no Google Earth Engine. Pode ter listras em mata densa.
+
+  - id: fabdem
+    nome: FABDEM (Forest And Buildings removed Copernicus DEM)
+    camada: validacao
+    provedor: University of Bristol
+    url: https://data.bris.ac.uk/
+    licenca: CC BY-NC-SA 4.0 (não comercial)
+    resolucao: 1" (~30 m)
+    uso: Validação cruzada do ANADEM; análise de sensibilidade ao DEM
+    status: planejado
+    confirmado: false
+    notas: Hawker et al. (2022), Environmental Research Letters.
+
+  - id: ibge_rede_altimetrica
+    nome: Rede Altimétrica de Alta Precisão (referências de nível)
+    camada: validacao
+    provedor: IBGE
+    url: https://www.ibge.gov.br/geociencias/informacoes-sobre-posicionamento-geodesico.html
+    licenca: Pública
+    uso: Verdade de campo para medir o erro vertical de cada DEM no Brasil
+    status: planejado
+    confirmado: false
+    notas: Atenção a datum vertical (Imbituba/Santana × EGM2008); usar o hgeoHNOR do IBGE na conversão.
+
+  # ---------------------------------------------------------------- geologia e hidrografia
+  - id: sgb_geologia
+    nome: Mapa geológico do Brasil 1:1.000.000
+    camada: geologia
+    provedor: Serviço Geológico do Brasil (SGB/CPRM) — GeoSGB
+    url: https://geosgb.sgb.gov.br/
+    licenca: Pública
+    resolucao: 1:1.000.000
+    uso: Custo de túnel e de corte por litologia (rocha sã × solo); talude de corte
+    status: planejado
+    confirmado: false
+
+  - id: ana_bho
+    nome: Base Hidrográfica Ottocodificada
+    camada: hidrografia
+    provedor: Agência Nacional de Águas (ANA)
+    url: https://metadados.snirh.gov.br/
+    licenca: Pública
+    uso: Travessias de rios → pontes obrigatórias; vãos
+    status: planejado
+    confirmado: false
+
+  # ---------------------------------------------------------------- restrições e uso do solo
+  - id: mapbiomas
+    nome: MapBiomas — cobertura e uso da terra (coleção mais recente)
+    camada: restricoes
+    provedor: MapBiomas
+    url: https://brasil.mapbiomas.org/
+    licenca: CC BY 4.0
+    resolucao: 30 m, anual
+    uso: Área urbana (desapropriação), água, floresta nativa (licenciamento)
+    status: planejado
+    confirmado: false
+
+  - id: cnuc_ucs
+    nome: Cadastro Nacional de Unidades de Conservação
+    camada: restricoes
+    provedor: Ministério do Meio Ambiente (MMA)
+    url: https://www.gov.br/mma/
+    licenca: Pública
+    uso: Proteção integral = barreira; uso sustentável = custo extra de licenciamento
+    status: planejado
+    confirmado: false
+
+  - id: funai_ti
+    nome: Terras Indígenas
+    camada: restricoes
+    provedor: FUNAI
+    url: https://www.gov.br/funai/
+    licenca: Pública
+    uso: Barreira no traçado
+    status: planejado
+    confirmado: false
+
+  # ---------------------------------------------------------------- infraestrutura existente
+  - id: osm_brasil
+    nome: OpenStreetMap — recorte Brasil
+    camada: infraestrutura
+    provedor: Geofabrik
+    url: https://download.geofabrik.de/south-america/brazil.html
+    licenca: ODbL 1.0
+    uso: Ferrovias, rodovias, estações, aeroportos; faixas de domínio que podem ser compartilhadas
+    status: planejado
+    confirmado: false
+
+  - id: ontl_ferrovias
+    nome: Malha ferroviária e dados de transporte
+    camada: infraestrutura
+    provedor: Observatório Nacional de Transporte e Logística (Infra S.A.)
+    url: https://ontl.infrasa.gov.br/
+    licenca: Pública
+    uso: Malha existente, bitolas, concessões
+    status: planejado
+    confirmado: false
+
+  # ---------------------------------------------------------------- demanda
+  - id: ibge_censo2022_pop
+    nome: Censo 2022 — população residente por município (SIDRA tabela 4709)
+    camada: demanda
+    provedor: IBGE
+    url: https://apisidra.ibge.gov.br/values/t/4709/n6/all/v/93/p/2022
+    licenca: Pública
+    uso: Massa populacional do modelo gravitacional
+    status: implementado
+    confirmado: true
+
+  - id: ibge_malha_municipal
+    nome: Malha municipal (API de malhas v3)
+    camada: demanda
+    provedor: IBGE
+    url: https://servicodados.ibge.gov.br/api/v3/malhas/paises/BR
+    licenca: Pública
+    uso: Geometria dos municípios; junção espacial com as demais camadas
+    status: implementado
+    confirmado: true
+
+  - id: ibge_pib_municipal
+    nome: PIB dos municípios (SIDRA tabela 5938)
+    camada: demanda
+    provedor: IBGE
+    url: https://apisidra.ibge.gov.br/
+    licenca: Pública
+    uso: Renda como variável do modelo gravitacional e do valor do tempo
+    status: planejado
+    confirmado: false
+
+  - id: ibge_regic
+    nome: REGIC 2018 — Regiões de Influência das Cidades
+    camada: demanda
+    provedor: IBGE
+    url: https://www.ibge.gov.br/geociencias/cartas-e-mapas/redes-geograficas.html
+    licenca: Pública
+    uso: Hierarquia urbana; escolha das cidades-polo candidatas a estação
+    status: planejado
+    confirmado: false
+
+  - id: ibge_ligacoes_rodoviarias
+    nome: Ligações Rodoviárias e Hidroviárias
+    camada: demanda
+    provedor: IBGE
+    url: https://www.ibge.gov.br/geociencias/cartas-e-mapas/redes-geograficas.html
+    licenca: Pública
+    uso: Frequência de ônibus entre cidades (proxy de demanda por terra)
+    status: planejado
+    confirmado: false
+
+  - id: anac_dados_estatisticos
+    nome: Dados estatísticos do transporte aéreo (passageiros por par de aeroportos)
+    camada: demanda
+    provedor: ANAC
+    url: https://www.gov.br/anac/pt-br/assuntos/dados-e-estatisticas
+    licenca: Pública
+    uso: Matriz OD observada; quem voa 300–800 km é o público-alvo do trem de alta velocidade
+    status: planejado
+    confirmado: false
+
+  - id: antt_rodoviario_interestadual
+    nome: Passageiros do transporte rodoviário interestadual
+    camada: demanda
+    provedor: ANTT
+    url: https://dados.antt.gov.br/
+    licenca: Pública
+    uso: Matriz OD por ônibus
+    status: planejado
+    confirmado: false
+
+  # ---------------------------------------------------------------- custos e validação
+  - id: sicro
+    nome: SICRO — Sistema de Custos Referenciais de Obras
+    camada: custos
+    provedor: DNIT
+    url: https://www.gov.br/dnit/
+    licenca: Pública
+    uso: Custos unitários de terraplenagem, obras de arte e transporte de material, por UF
+    status: planejado
+    confirmado: false
+
+  - id: bm_china_hsr_2014
+    nome: High-Speed Railways in China — A Look at Construction Costs (2014)
+    camada: custos
+    provedor: Banco Mundial
+    url: https://documents.worldbank.org/
+    licenca: CC BY 3.0 IGO
+    uso: Custo por km por tipo de estrutura (aterro, viaduto, túnel) em linhas reais
+    status: planejado
+    confirmado: false
+
+  - id: transit_costs
+    nome: Transit Costs Project
+    camada: custos
+    provedor: NYU Marron Institute
+    url: https://transitcosts.com/
+    licenca: Ver site
+    uso: Comparação internacional de custos de túnel
+    status: planejado
+    confirmado: false
+
+  - id: estudos_tav_rj_sp
+    nome: Estudos de viabilidade do TAV Rio–São Paulo–Campinas (2009)
+    camada: validacao
+    provedor: ANTT / Halcrow-Sinergia
+    url: https://www.gov.br/antt/
+    licenca: Pública
+    uso: Comparar nosso traçado, extensão de túneis e demanda com o estudo oficial
+    status: planejado
+    confirmado: false

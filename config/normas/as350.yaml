@@ -1,0 +1,29 @@
+# Parâmetros geométricos de projeto — alta velocidade, 350 km/h, via dupla, só passageiros.
+# Cada valor tem fonte. Ao mudar um número, mude a fonte junto.
+nome: "Alta velocidade 350 km/h (via dupla, só passageiros)"
+status: referencia
+velocidade_projeto_kmh: 350
+
+# Raio mínimo de curva horizontal. TB 10621-2014: 7000 m a 350 km/h (recomendado 8000–10000 m).
+# Conferência física: R >= 11,8·V²/(h + I), com superelevação h=175 mm e insuficiência I≈60–100 mm → 5,3–6,2 km;
+# a norma chinesa adota 7000 m por conforto.
+raio_horizontal_min_m: 7000
+
+# Rampa máxima do greide (inclinação do TRILHO, não do terreno).
+# TB 10621-2014: 20‰ (normal) e 30‰ (difícil). TSI INF (UE 1299/2014): até 35‰ em linhas só de
+# passageiros, com média <= 25‰ em 10 km e trechos contínuos <= 6 km.
+# Brasil tem serras (Mar, Mantiqueira): usamos 30‰ como referência; rodar sensibilidade com 20‰ e 35‰.
+rampa_max: 0.030
+
+# Rampa máxima em estações e nas pontas do trecho.
+rampa_estacao_max: 0.0
+
+# Raio mínimo de curva vertical. TB 10621-2014: 25 000 m a 350 km/h.
+raio_vertical_min_m: 25000
+
+# Largura da plataforma (via dupla, entre-eixo 5,0 m). TB 10621-2014: 13,6 m a 350 km/h.
+largura_plataforma_m: 13.6
+
+fontes:
+  - "TB 10621-2014 — Code for Design of High-speed Railway (China), tabelas de parâmetros para 350 km/h"
+  - "Regulamento (UE) 1299/2014 — TSI Infraestrutura, §4.2.3.6 (rampas máximas)"

@@ -1,0 +1,36 @@
+# Modelo de custos unitários de implantação (via dupla).
+#
+# STATUS: PLACEHOLDER. Estes números são ORDEM DE GRANDEZA para o otimizador funcionar.
+# NÃO citar custos totais calculados com eles. Calibração planejada (docs/roteiro.md, M2):
+#   - SICRO/DNIT (custos unitários de terraplenagem e obras de arte, por UF e mês)
+#   - Banco Mundial (2014), "High-Speed Railways in China: A Look at Construction Costs"
+#   - Transit Costs Project (NYU Marron Institute)
+#   - Estudos do TAV Rio–SP–Campinas (ANTT/Halcrow-Sinergia, 2009)
+#
+# O que importa para o TRAÇADO são as razões entre preços (corte × aterro × viaduto × túnel);
+# o otimizador escolhe a estrutura mais barata em cada ponto respeitando os limites técnicos.
+ano_base: 2025
+moeda: BRL
+status: placeholder
+
+precos:
+  corte_m3: 40.0                 # escavação + carga + transporte médio (R$/m³)
+  aterro_m3: 30.0                # aterro compactado, sem aproveitar material de corte (R$/m³)
+  viaduto_m: 120000.0            # viaduto via dupla, parcela fixa (R$/m)
+  viaduto_m_por_m_altura: 2500.0 # acréscimo por metro de altura do greide sobre o terreno (R$/m/m)
+  tunel_m: 220000.0              # túnel NATM via dupla, seção ~100 m² (R$/m)
+  via_e_sistemas_m: 45000.0      # via em laje, energia, sinalização, telecom — constante (R$/m)
+
+geotecnia:
+  talude_corte_h_por_v: 1.0      # inclinação média dos taludes de corte (H:V); rocha permite mais íngreme
+  talude_aterro_h_por_v: 1.5     # inclinação dos taludes de aterro (H:V)
+
+limites:
+  aterro_altura_max_m: 15.0      # acima disso, recalque/estabilidade → viaduto
+  corte_profundidade_max_m: 25.0 # acima disso → túnel
+  viaduto_altura_min_m: 6.0      # gabarito mínimo para viaduto fazer sentido
+  viaduto_altura_max_m: 100.0    # pilares muito altos: fora do escopo do modelo
+  tunel_profundidade_min_m: 15.0 # trilho pelo menos isso abaixo do terreno para caber túnel com cobertura
+
+fontes:
+  - "Placeholder de ordem de grandeza — ver cabeçalho"

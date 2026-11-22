@@ -1,0 +1,106 @@
+[project]
+name = "trembr"
+version = "0.1.0"
+description = "Estudo científico aberto de uma malha ferroviária de alta velocidade para o Brasil"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+dependencies = []  # gerenciadas pelo pixi (conda-forge) abaixo
+
+[project.scripts]
+trembr = "trembr.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/trembr"]
+
+# ---------------------------------------------------------------------------
+# Ambiente: pixi + conda-forge (GDAL, PROJ e solvers nativos funcionam igual
+# no Windows e no Linux; o lockfile garante reprodutibilidade bit a bit).
+# ---------------------------------------------------------------------------
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["win-64", "linux-64"]
+
+[tool.pixi.dependencies]
+python = "3.12.*"
+# núcleo numérico
+numpy = ">=2.0"
+scipy = "*"
+numba = "*"
+pandas = "*"
+polars = "*"
+pyarrow = "*"
+python-duckdb = "*"
+# geoespacial
+gdal = ">=3.9"
+rasterio = ">=1.4"
+rioxarray = "*"
+xarray = "*"
+dask-core = "*"
+geopandas = ">=1.0"
+pyogrio = "*"
+shapely = ">=2.0"
+pyproj = "*"
+scikit-image = "*"
+networkx = "*"
+# otimização
+pyomo = "*"
+highspy = "*"
+pyscipopt = "*"
+pymoo = "*"
+# estatística e incerteza
+statsmodels = "*"
+salib = "*"
+# infraestrutura do projeto
+pydantic = ">=2"
+pyyaml = "*"
+typer = "*"
+rich = "*"
+httpx = "*"
+matplotlib = "*"
+# qualidade
+pytest = "*"
+hypothesis = "*"
+ruff = "*"
+
+[tool.pixi.pypi-dependencies]
+trembr = { path = ".", editable = true }
+
+[tool.pixi.feature.nb.dependencies]
+jupyterlab = "*"
+ipywidgets = "*"
+lonboard = "*"
+
+[tool.pixi.environments]
+default = { solve-group = "padrao" }
+nb = { features = ["nb"], solve-group = "padrao" }
+
+[tool.pixi.tasks]
+test = "pytest"
+lint = "ruff check src tests"
+fmt = "ruff format src tests"
+dados-ibge = "trembr dados ibge"
+estudo-sp-rj = "trembr estudo sp-rj"
+
+[tool.pixi.feature.nb.tasks]
+lab = "jupyter lab --notebook-dir notebooks"
+
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "NPY", "RUF"]
+ignore = [
+  "RUF001", "RUF002", "RUF003",  # acentos e símbolos (‰, ↔) em strings/comentários são intencionais
+  "E501",                        # tamanho de linha fica a cargo do `ruff format`
+]

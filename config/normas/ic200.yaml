@@ -1,0 +1,22 @@
+# Trem intercidades rápido, 200 km/h, via dupla, só passageiros.
+# STATUS PRELIMINAR: valores derivados de fórmula e de ordem de grandeza; revisar com norma específica
+# antes de usar em comparação publicada.
+nome: "Intercidades 200 km/h (via dupla, só passageiros)"
+status: preliminar
+velocidade_projeto_kmh: 200
+
+# R >= 11,8·V²/(h + I) com h=150 mm e I=100 mm → ~1890 m; arredondado para cima.
+raio_horizontal_min_m: 2000
+
+# Trens-unidade elétricos de passageiros vencem 25‰ sem dificuldade.
+rampa_max: 0.025
+rampa_estacao_max: 0.0
+
+# Ordem de grandeza usada para 200 km/h na norma chinesa de linhas de passageiros.
+raio_vertical_min_m: 15000
+
+largura_plataforma_m: 12.0
+
+fontes:
+  - "Fórmula clássica de superelevação: R = 11,8·V²/(h + I) [V em km/h, h e I em mm]"
+  - "Valores de R_v e plataforma: ordem de grandeza — REVISAR"
