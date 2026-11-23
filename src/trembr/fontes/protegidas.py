@@ -7,8 +7,9 @@ Classes para o traçado (Fase 2 · v3):
 - ``apa`` (Área de Proteção Ambiental): a mais permissiva; licenciamento comum, com condicionantes;
 - terras indígenas: barreira.
 
-As TIs vêm do GeoServer da FUNAI, que recusa downloads automatizados. Baixe o shapefile no
-navegador (link em ``URL_TIS``) e salve como ``data/raw/funai/tis_poligonais.zip``.
+As TIs vêm do GeoServer da FUNAI, que recusa downloads automatizados. Baixe no navegador, pela
+página oficial (``PAGINA_TIS``), o shapefile nacional ou os dos estados da região, e salve os
+.zip em ``data/raw/funai/``.
 """
 
 from __future__ import annotations
@@ -27,11 +28,8 @@ URL_CNUC = (
     "https://dados.mma.gov.br/dataset/44b6dc8a-dc82-4a84-8d95-1b0da7c85dac/resource/"
     "6ba9a557-87e8-4882-acb7-b3e0f0ea192d/download/shp_cnuc_2025_08.zip"
 )
-URL_TIS = (
-    "https://geoserver.funai.gov.br/geoserver/Funai/ows?service=WFS&version=1.0.0"
-    "&request=GetFeature&typeName=Funai:tis_poligonais&outputFormat=SHAPE-ZIP"
-)
-ARQ_TIS = BRUTOS / "funai" / "tis_poligonais.zip"
+PAGINA_TIS = "https://www.gov.br/funai/pt-br/atuacao/terras-indigenas/geoprocessamento-e-mapas"
+PASTA_TIS = BRUTOS / "funai"  # um ou mais .zip (nacional ou por UF) baixados da PAGINA_TIS
 # Colunas lidas do CNUC: os campos de texto longos (atos legais) vêm cortados no meio de um
 # caractere UTF-8 no limite de 254 bytes do DBF e quebram a leitura.
 COLUNAS_CNUC = ["cd_cnuc", "nome_uc", "grupo", "categoria", "esfera", "cria_ano", "ha_total"]
@@ -56,9 +54,17 @@ def _ucs(arq_zip: Path) -> gpd.GeoDataFrame:
     return ucs
 
 
-def _tis(arq_zip: Path) -> gpd.GeoDataFrame:
-    camada = pyogrio.list_layers(f"/vsizip/{arq_zip.as_posix()}")[0, 0]
-    tis = pyogrio.read_dataframe(f"/vsizip/{arq_zip.as_posix()}/{camada}.shp")
+def _tis(zips: list[Path]) -> gpd.GeoDataFrame:
+    partes = []
+    for z in zips:
+        camada = pyogrio.list_layers(f"/vsizip/{z.as_posix()}")[0, 0]
+        partes.append(pyogrio.read_dataframe(f"/vsizip/{z.as_posix()}/{camada}.shp"))
+    tis = gpd.GeoDataFrame(pd.concat(partes, ignore_index=True), crs=partes[0].crs)
+    # baixadas por UF, as TIs que cruzam divisas vêm repetidas
+    if "terrai_cod" in tis:
+        tis = tis.drop_duplicates("terrai_cod")
+    else:
+        tis = tis[~tis.geometry.to_wkb().duplicated()]
     nomes = {"terrai_nom": "nome", "etnia_nome": "etnia", "fase_ti": "fase", "uf_sigla": "uf"}
     tis = tis.rename(columns={k: v for k, v in nomes.items() if k in tis})
     manter = [c for c in ("nome", "etnia", "fase", "uf") if c in tis]
@@ -78,13 +84,15 @@ def preparar_areas_protegidas(*, forcar: bool = False, log=print) -> dict[str, P
     arquivos["ucs"] = garantir(PROCESSADOS / "mma") / "unidades_conservacao.parquet"
     _ucs(cnuc).to_parquet(arquivos["ucs"])
 
-    if ARQ_TIS.exists():
+    zips = sorted(PASTA_TIS.glob("*.zip"))
+    if zips:
         arquivos["tis"] = garantir(PROCESSADOS / "funai") / "terras_indigenas.parquet"
-        _tis(ARQ_TIS).to_parquet(arquivos["tis"])
+        _tis(zips).to_parquet(arquivos["tis"])
     else:
         log(
-            "  terras indígenas: o GeoServer da FUNAI recusa download automatizado. Baixe no "
-            f"navegador:\n    {URL_TIS}\n  e salve como {ARQ_TIS}; depois rode de novo."
+            "  terras indígenas: o GeoServer da FUNAI recusa download automatizado. Na página\n"
+            f"    {PAGINA_TIS}\n  baixe o shapefile das TIs (nacional ou por UF) e salve os .zip "
+            f"em {PASTA_TIS}; depois rode de novo."
         )
     return arquivos
 

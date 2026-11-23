@@ -119,8 +119,9 @@ fontes:
     status: implementado
     confirmado: false
     notas: >-
-      O GeoServer recusa download automatizado: baixar no navegador e salvar em
-      data/raw/funai/tis_poligonais.zip. O leitor já existe (fontes/protegidas.py).
+      O GeoServer recusa download automatizado (e às vezes o acesso direto pelo navegador).
+      Baixar pela página oficial gov.br/funai/pt-br/atuacao/terras-indigenas/geoprocessamento-e-mapas
+      (nacional ou por UF) e salvar os .zip em data/raw/funai/. O leitor já existe.
 
   # ---------------------------------------------------------------- infraestrutura existente
   - id: osm_brasil
