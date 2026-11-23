@@ -19,10 +19,10 @@ from rasterio.warp import Resampling, calculate_default_transform, reproject
 from trembr.atlas import estilo
 from trembr.atlas.web import CamadaWeb, ladrilhos
 from trembr.fontes import copernicus
-from trembr.graficos import MAR, SUPERFICIE, TINTA
 from trembr.paths import INTERMEDIARIOS, garantir
 from trembr.regiao import Regiao
 from trembr.terreno.dem import Raster
+from trembr.visual import MAR, SUPERFICIE, TINTA, fmt_int
 
 ID = "relevo"
 NOME = "Relevo"
@@ -182,6 +182,8 @@ def web(regiao: Regiao) -> list[CamadaWeb]:
             tipo="raster",
             pintura={"raster-opacity": 0.9, "raster-fade-duration": 0},
             cor="#c9a378",
+            gradiente=[c for _, c in _PARADAS],
+            gradiente_rotulos=["0 m", f"{fmt_int(Z_MAX)} m"],
             imagens=ladrilhos(colorir(r.dados, r.resolucao), r.transform, "JPEG"),
             ordem=10,
         )

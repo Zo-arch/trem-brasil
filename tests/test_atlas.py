@@ -6,11 +6,10 @@ import pytest
 from matplotlib.colors import to_rgb
 from shapely.geometry import MultiPolygon, Point, box
 
-from trembr.atlas.estilo import fmt_dec, fmt_int
 from trembr.atlas.relevo import colorir
 from trembr.atlas.web import CamadaWeb, montar_html, para_geojson
-from trembr.graficos import MAR
 from trembr.regiao import Regiao, carregar_regiao, sem_ilhas_oceanicas
+from trembr.visual import MAR, fmt_dec, fmt_int
 
 
 def test_sem_ilhas_oceanicas_tira_so_as_ilhas_distantes():

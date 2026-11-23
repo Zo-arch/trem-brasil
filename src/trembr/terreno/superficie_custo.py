@@ -11,7 +11,7 @@ cada célula com um proxy **coerente com o mesmo modelo de seção** usado no gr
    :math:`c = c_{via} + \tfrac12[c_{secao}(+h) + c_{secao}(-h)]`
    (meio aterro/viaduto, meio corte/túnel).
 
-Os parâmetros :math:`w` e :math:`L` NÃO estão calibrados. Calibração planejada (roteiro: Fase 2 · v6):
+Os parâmetros :math:`w` e :math:`L` (``config/corredor``) NÃO estão calibrados. Calibração planejada (roteiro: Fase 2 · v6):
 regressão do custo ótimo do greide (programação dinâmica) contra :math:`\sigma` e :math:`S` em
 milhares de trechos amostrados. Até lá, o corredor é exploratório.
 """
@@ -21,7 +21,7 @@ from __future__ import annotations
 import numpy as np
 from scipy.ndimage import uniform_filter
 
-from trembr.config import ModeloCustos, Norma
+from trembr.config import ModeloCustos, Norma, ParamCorredor, carregar_corredor
 from trembr.terreno.dem import Raster
 from trembr.tracado.secao import param_secao, secao_vetor
 
@@ -30,12 +30,16 @@ def superficie_custo(
     dem: Raster,
     norma: Norma,
     custos: ModeloCustos,
-    *,
-    janela_m: float = 1500.0,
-    comprimento_rampa_m: float = 1000.0,
-    cota_agua_m: float = 0.5,
+    param: ParamCorredor | None = None,
 ) -> np.ndarray:
-    """R$/m para atravessar cada célula; ``inf`` em água/mar e sem dado."""
+    """R$/m para atravessar cada célula; ``inf`` em água/mar e sem dado.
+
+    ``param``: janela da rugosidade, comprimento de rampa e cota da água
+    (``config/corredor/referencia.yaml`` se omitido).
+    """
+    p_sup = (param or carregar_corredor()).superficie
+    janela_m, comprimento_rampa_m = p_sup.janela_m, p_sup.comprimento_rampa_m
+    cota_agua_m = p_sup.cota_agua_m
     z = dem.dados
     sem_dado = ~np.isfinite(z)
     zf = np.where(sem_dado, np.nanmean(z), z)

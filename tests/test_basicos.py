@@ -78,3 +78,16 @@ def test_superficie_custo_relevo_encarece_e_agua_proibe():
     assert np.isclose(plano, custos.precos.via_e_sistemas_m, rtol=0.05)
     assert acidentado > 2 * plano
     assert np.isinf(c[:10, :10]).all()
+
+
+def test_configs_do_corredor_e_do_estudo_rio_sp():
+    from trembr.config import carregar_corredor
+    from trembr.estudos.rio_sp import carregar_config, rodar
+
+    corredor = carregar_corredor()
+    assert corredor.status == "nao_calibrado" and corredor.superficie.janela_m > 0
+    cfg = carregar_config("rio_sp")
+    assert {"origem", "destino", "v1", "v2", "corredor"} <= set(cfg)
+    assert len(cfg["v1"]["recorte"]) == 4 and 0 < cfg["v2"]["folga_elipse"] < 1
+    with pytest.raises(ValueError, match="versão"):
+        rodar(99)

@@ -86,10 +86,11 @@ nb = { features = ["nb"], solve-group = "padrao" }
 test = "pytest"
 lint = "ruff check src tests"
 fmt = "ruff format src tests"
-dados-base = "trembr dados base"
+dados = "trembr dados tudo"
 atlas = "trembr atlas"
-estudo-sp-rj = "trembr estudo sp-rj"
-estudo-rio-sp-v2 = "trembr estudo rio-sp-v2"
+mapa = "trembr mapa"
+estudo-rio-sp-v1 = "trembr estudo rio-sp --versao 1"
+estudo-rio-sp-v2 = "trembr estudo rio-sp --versao 2"
 
 [tool.pixi.feature.nb.tasks]
 lab = "jupyter lab --notebook-dir notebooks"

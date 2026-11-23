@@ -20,7 +20,7 @@ import pyogrio
 import yaml
 
 from trembr.crs import SIRGAS2000
-from trembr.fontes.baixar import baixar_grande
+from trembr.fontes.baixar import baixar
 from trembr.paths import BRUTOS, CONFIG, INTERMEDIARIOS, PROCESSADOS, garantir
 
 GEOFABRIK = "https://download.geofabrik.de"
@@ -97,7 +97,7 @@ def preparar_transporte(regiao_id: str = "sudeste", *, forcar: bool = False, log
     }  # fmt: skip
     for extrato in extratos(regiao_id):
         nome = extrato.rsplit("/", 1)[-1]
-        pbf = baixar_grande(
+        pbf = baixar(
             f"{GEOFABRIK}/{extrato}-latest.osm.pbf",
             BRUTOS / "osm" / f"{nome}-latest.osm.pbf",
             fonte_id="osm_brasil",

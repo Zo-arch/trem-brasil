@@ -17,9 +17,9 @@ from pyproj import Geod
 
 from trembr.atlas import estilo
 from trembr.atlas.web import CamadaWeb, para_geojson
-from trembr.graficos import TINTA
 from trembr.paths import PROCESSADOS
 from trembr.regiao import Regiao
+from trembr.visual import TINTA
 
 ID = "transporte"
 NOME = "Transporte existente"
@@ -176,6 +176,10 @@ def web(regiao: Regiao) -> list[CamadaWeb]:
             tipo="line",
             pintura={"line-color": cor, "line-width": largura},
             cor=ESTILO_RODOVIA["autoestrada"][1],
+            legenda=[
+                [ESTILO_RODOVIA[c][1], ESTILO_RODOVIA[c][0]]
+                for c in ("autoestrada", "troncal", "principal")
+            ],
             geojson=para_geojson(
                 principais, ["classe", "classe_nome", "rotulo"], tolerancia_m=200, casas=4
             ),
@@ -202,6 +206,7 @@ def web(regiao: Regiao) -> list[CamadaWeb]:
                 popup={"situacao_nome": "Situação", "operator": "Operador", "gauge": "Bitola (mm)"},
                 titulo_popup="name",
                 ordem=45,
+                visivel=situacao == "em_operacao",  # desativadas começam desligadas
             )
             for situacao, situacoes, nome, cor_linha in (
                 ("em_operacao", ["em_operacao"], "Ferrovias em operação", COR_FERROVIA),

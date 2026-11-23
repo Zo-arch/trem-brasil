@@ -1,6 +1,11 @@
-"""Estudo Rio–São Paulo, Fase 2 · v2: relevo + cidades. O otimizador decide onde parar.
+"""Estudo de caso Rio–São Paulo (Fase 2): a mesma linha, um ingrediente novo por versão.
 
-Fluxo:
+Configuração em ``config/estudos/rio_sp.yaml``; resultados em ``resultados/rio_sp/v<N>/``.
+
+**v1 — só relevo.** Superfície de custo → corredor A* entre as pontas → suavização → greide
+ótimo. Sem nenhuma indicação de caminho, acha o Vale do Paraíba.
+
+**v2 — relevo + cidades.** O otimizador decide onde parar. Fluxo:
 1. candidatas: "cidades" do REGIC dentro de uma elipse com focos nas pontas
    (``config/estudos/rio_sp.yaml``), em ordem de avanço ao longo do eixo SP → Rio;
 2. relevo recortado do mosaico regional → superfície de custo (a mesma da v1);
@@ -28,14 +33,19 @@ import yaml
 from pyproj import Transformer
 from shapely.geometry import LineString
 
-from trembr.config import carregar_custos, carregar_norma
+from trembr.config import ParamCorredor, carregar_corredor, carregar_custos, carregar_norma
 from trembr.fontes import copernicus
 from trembr.paths import CONFIG, PROCESSADOS, RESULTADOS, garantir
 from trembr.regiao import carregar_regiao
 from trembr.terreno.dem import Raster, carregar_reprojetado
 from trembr.terreno.superficie_custo import superficie_custo
-from trembr.tracado.corredor import caminhos_a_partir_de
-from trembr.tracado.geometria import raio_curvatura, reamostrar, suavizar
+from trembr.tracado.corredor import caminho_minimo, caminhos_a_partir_de
+from trembr.tracado.geometria import (
+    comprimento_acumulado,
+    raio_curvatura,
+    reamostrar,
+    suavizar,
+)
 from trembr.tracado.paradas import Rota, fronteira, joelho, suportadas
 from trembr.tracado.perfil import discretizacao, otimizar_greide
 from trembr.tracado.secao import NOMES_TIPO
@@ -100,10 +110,15 @@ def nos_do_problema(cfg: dict) -> gpd.GeoDataFrame:
     return gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df["x"], df["y"]), crs=crs)
 
 
-def relevo(cfg: dict, nos: gpd.GeoDataFrame) -> Raster:
-    """DEM do estudo: recorte do mosaico regional do Sudeste (ou download, se não houver)."""
-    area = nos.geometry.union_all().convex_hull.buffer(cfg["v2"]["margem_km"] * 1000)
-    limites = tuple(gpd.GeoSeries([area], crs=nos.crs).to_crs("EPSG:4674").total_bounds)
+def limites_dos_nos(nos: gpd.GeoDataFrame, margem_km: float) -> tuple[float, ...]:
+    """Retângulo (graus) em volta dos nós, com margem medida em metros."""
+    area = nos.geometry.union_all().convex_hull.buffer(margem_km * 1000)
+    return tuple(gpd.GeoSeries([area], crs=nos.crs).to_crs("EPSG:4674").total_bounds)
+
+
+def relevo(cfg: dict, limites: tuple[float, ...]) -> Raster:
+    """DEM do estudo no CRS métrico: recorte do mosaico regional do Sudeste (``trembr dados
+    relevo``) ou, se ele não existir, download só do recorte."""
     regional = copernicus.caminho_bbox(carregar_regiao("sudeste").bbox(), "glo90")
     if regional.exists():
         return carregar_reprojetado(regional, cfg["crs"], cfg["resolucao_m"], limites)
@@ -149,6 +164,7 @@ def detalhar(
     dem: Raster,
     norma,
     custos,
+    corredor: ParamCorredor,
     passo_m: float,
 ) -> tuple[dict, pd.DataFrame]:
     """Suaviza e calcula o greide ótimo trecho a trecho (estação em nível em cada parada)."""
@@ -157,7 +173,8 @@ def detalhar(
     for trecho, (a, b) in enumerate(itertools.pairwise(rota.nos)):
         celulas = caminhos[(a, b)]
         xy = dem.lc_para_xy(celulas[:, 0], celulas[:, 1])
-        xy = suavizar(xy, tolerancia_m=500.0, iteracoes=5) if len(xy) > 2 else xy
+        sv = corredor.suavizacao
+        xy = suavizar(xy, sv.tolerancia_m, sv.iteracoes) if len(xy) > 2 else xy
         xy, _ = reamostrar(xy, disc.passo_m)
         zg = dem.amostrar(xy)
         if not np.isfinite(zg).all():
@@ -207,11 +224,13 @@ def detalhar(
     return resumo, tab
 
 
-def rodar(nome_cfg: str = "rio_sp", log=print) -> tuple[dict, Path]:
+def rodar_v2(nome_cfg: str = "rio_sp", log=print) -> tuple[dict, Path]:
+    """v2: relevo + cidades. Fronteira de Pareto das paradas e três rotas em destaque."""
     t0 = time.perf_counter()
     cfg = carregar_config(nome_cfg)
     norma, custos = carregar_norma(cfg["norma"]), carregar_custos(cfg["custos"])
-    saida = garantir(RESULTADOS / f"{nome_cfg}_v2")
+    corredor = carregar_corredor(cfg["corredor"])
+    saida = garantir(RESULTADOS / nome_cfg / "v2")
 
     log("1/5 candidatas (REGIC, elipse com focos nas pontas)…")
     nos = nos_do_problema(cfg)
@@ -221,8 +240,8 @@ def rodar(nome_cfg: str = "rio_sp", log=print) -> tuple[dict, Path]:
         )
 
     log("2/5 relevo e superfície de custo…")
-    dem = relevo(cfg, nos)
-    custo = superficie_custo(dem, norma, custos)
+    dem = relevo(cfg, limites_dos_nos(nos, cfg["v2"]["margem_km"]))
+    custo = superficie_custo(dem, norma, custos, corredor)
     log(f"    {dem.dados.shape[1]}×{dem.dados.shape[0]} células de {dem.resolucao:.0f} m")
 
     log("3/5 corredor ótimo entre cada par de nós (Dijkstra)…")
@@ -249,7 +268,9 @@ def rodar(nome_cfg: str = "rio_sp", log=print) -> tuple[dict, Path]:
     log("5/5 greide ótimo das rotas em destaque…")
     resumos, perfis = {}, []
     for nome, rota in destaques.items():
-        resumos[nome], tab = detalhar(rota, nos, caminhos, dem, norma, custos, cfg["passo_m"])
+        resumos[nome], tab = detalhar(
+            rota, nos, caminhos, dem, norma, custos, corredor, cfg["passo_m"]
+        )
         perfis.append(tab.assign(rota=nome))
         log(f"    {nome}: {resumos[nome]['n_paradas']} paradas, {resumos[nome]['extensao_km']} km")
 
@@ -292,8 +313,98 @@ def rodar(nome_cfg: str = "rio_sp", log=print) -> tuple[dict, Path]:
         json.dumps(resumo, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
-    from trembr.estudos.figuras_rio_sp import figura_fronteira, figura_mapa
+    from trembr.estudos.figuras import figura_fronteira, figura_mapa_rotas
 
     figura_fronteira(rotas, sup, destaques, nos, saida / "fronteira.png")
-    figura = figura_mapa(dem, nos, perfis, destaques, resumos, saida / "mapa.png")
+    figura = figura_mapa_rotas(dem, nos, perfis, destaques, resumos, saida / "mapa.png")
     return resumo, figura
+
+
+def rodar_v1(nome_cfg: str = "rio_sp", log=print) -> tuple[dict, Path]:
+    """v1: só relevo. Corredor A* entre as pontas, suavização e greide ótimo."""
+    t0 = time.perf_counter()
+    cfg = carregar_config(nome_cfg)
+    norma, custos = carregar_norma(cfg["norma"]), carregar_custos(cfg["custos"])
+    corredor = carregar_corredor(cfg["corredor"])
+    saida = garantir(RESULTADOS / nome_cfg / "v1")
+
+    log("1/5 relevo (recorte do mosaico regional)…")
+    dem = relevo(cfg, tuple(cfg["v1"]["recorte"]))
+    log(f"    {dem.dados.shape[1]}×{dem.dados.shape[0]} células de {dem.resolucao:.0f} m")
+
+    log("2/5 superfície de custo (rugosidade + excesso de declividade)…")
+    custo = superficie_custo(dem, norma, custos, corredor)
+
+    log("3/5 corredor de menor custo (A*, 16 direções)…")
+    para = Transformer.from_crs(WGS84, cfg["crs"], always_xy=True)
+    pontas = [para.transform(cfg[p]["lon"], cfg[p]["lat"]) for p in ("origem", "destino")]
+    o, d = (_celula_valida(custo, *dem.xy_para_lc(x, y)) for x, y in pontas)
+    rota, _ = caminho_minimo(custo, o, d, dem.resolucao)
+
+    log("4/5 suavização e estaqueamento…")
+    sv = corredor.suavizacao
+    xy = suavizar(dem.lc_para_xy(rota[:, 0], rota[:, 1]), sv.tolerancia_m, sv.iteracoes)
+    disc = discretizacao(norma, cfg["passo_m"])
+    xy, _ = reamostrar(xy, disc.passo_m)
+    zg = dem.amostrar(xy)
+    if not np.isfinite(zg).all():
+        ok = np.isfinite(zg)
+        zg = np.interp(np.arange(zg.size), np.flatnonzero(ok), zg[ok])
+
+    log(f"5/5 greide ótimo: {zg.size} estacas a cada {disc.passo_m:.2f} m…")
+    perfil = otimizar_greide(zg, disc, norma, custos)
+    raio = raio_curvatura(xy)
+    reta_km = float(np.hypot(*(xy[-1] - xy[0])) / 1000)
+    resumo = perfil.resumo() | {
+        "versao": "v1 — só relevo",
+        "norma": cfg["norma"],
+        "dem": "copernicus_glo90",
+        "crs": cfg["crs"],
+        "raio_horizontal_min_m": float(raio.min()),
+        "km_abaixo_raio_min": float(
+            (raio < norma.raio_horizontal_min_m).sum() * disc.passo_m / 1000
+        ),
+        "distancia_reta_km": reta_km,
+        "sinuosidade": float(comprimento_acumulado(xy)[-1] / 1000 / reta_km),
+        "tempo_execucao_s": round(time.perf_counter() - t0, 1),
+    }
+
+    gpd.GeoDataFrame(
+        {"rota": ["direta"], "norma": [cfg["norma"]]}, geometry=[LineString(xy)], crs=cfg["crs"]
+    ).to_parquet(saida / "rotas.parquet")
+    pd.DataFrame(
+        {
+            "s_m": perfil.s_m,
+            "x": xy[:, 0],
+            "y": xy[:, 1],
+            "z_terreno": perfil.z_terreno,
+            "z_trilho": perfil.z_trilho,
+            "estrutura": [NOMES_TIPO[int(t)] for t in perfil.tipo],
+        }
+    ).to_parquet(saida / "perfis.parquet")
+    (saida / "resumo.json").write_text(
+        json.dumps(resumo, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    from trembr.estudos.figuras import figura_tracado
+
+    velocidade = f"{norma.velocidade_projeto_kmh:.0f} km/h"
+    figura = figura_tracado(
+        dem,
+        xy,
+        perfil,
+        resumo,
+        titulo=f"São Paulo ↔ Rio de Janeiro, v1: só relevo ({velocidade})",
+        rotulos=(cfg["origem"]["nome"], cfg["destino"]["nome"]),
+        caminho=saida / "mapa.png",
+    )
+    return resumo, figura
+
+
+VERSOES = {1: rodar_v1, 2: rodar_v2}
+
+
+def rodar(versao: int, nome_cfg: str = "rio_sp", log=print) -> tuple[dict, Path]:
+    """Roda uma versão do estudo (1 = só relevo, 2 = relevo + cidades)."""
+    if versao not in VERSOES:
+        raise ValueError(f"versão {versao} não existe; disponíveis: {sorted(VERSOES)}")
+    return VERSOES[versao](nome_cfg, log)

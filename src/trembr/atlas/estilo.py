@@ -13,19 +13,17 @@ import matplotlib
 
 matplotlib.use("Agg")
 import geopandas as gpd
-import matplotlib.patheffects as pe
 import matplotlib.pyplot as plt
 
 from trembr.crs import BRASIL_POLICONICA
-from trembr.graficos import MAR, SUPERFICIE, TINTA, TINTA_2
 from trembr.regiao import Regiao, ufs_brasil
+from trembr.visual import HALO, MAR, SUPERFICIE, TINTA, TINTA_2, fmt_dec, fmt_int  # noqa: F401
 
 CRS_MAPA = BRASIL_POLICONICA  # regra do projeto para mapas nacionais (crs.py)
 TERRA_FORA = "#eeede8"  # UFs fora da região
 TERRA = SUPERFICIE  # UFs da região
 DIVISA = "#8a887f"
 DIVISA_FORA = "#ffffff"
-HALO = [pe.withStroke(linewidth=3, foreground=SUPERFICIE)]
 
 LARGURA_POL = 12.0
 CABECALHO_POL = 0.95
@@ -39,16 +37,6 @@ class Moldura:
     ax: plt.Axes
     regiao: Regiao
     ufs: gpd.GeoDataFrame  # todas as UFs, em CRS_MAPA
-
-
-def fmt_int(n: float) -> str:
-    """1668 → '1.668' (padrão brasileiro)."""
-    return f"{round(n):,}".replace(",", ".")
-
-
-def fmt_dec(x: float, casas: int = 1) -> str:
-    """84.84 → '84,8'."""
-    return f"{x:,.{casas}f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 
 def extensao(regiao: Regiao) -> tuple[float, float, float, float]:

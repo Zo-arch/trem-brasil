@@ -11,6 +11,12 @@ custos: referencia            # PLACEHOLDER: custos só como unidade relativa (k
 resolucao_m: 90               # Copernicus GLO-90, recortado do mosaico regional do Sudeste
 passo_m: 100                  # estaqueamento desejado do greide (ajustado pela norma)
 crs: "EPSG:31983"             # SIRGAS 2000 / UTM 23S: SP e RJ estão no fuso 23
+corredor: referencia          # superfície de custo e suavização (config/corredor)
+
+v1:
+  # Recorte do relevo (oeste, sul, leste, norte; graus): contém a Serra do Mar, a Mantiqueira
+  # e o Vale do Paraíba entre as pontas. É o mesmo da primeira rodada (nov/2026).
+  recorte: [-47.0, -23.85, -42.95, -22.25]
 
 v2:
   # Candidatas a parada: "cidades" do REGIC 2018 (arranjo populacional ou município isolado),

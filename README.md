@@ -22,7 +22,7 @@
 
 ## Primeiro resultado: São Paulo ↔ Rio de Janeiro, só com o relevo
 
-![Mapa de relevo com o traçado SP–RJ pelo Vale do Paraíba e, abaixo, o perfil do terreno com o greide ótimo do trilho](docs/img/sp_rj_as350.png)
+![Mapa de relevo com o traçado SP–RJ pelo Vale do Paraíba e, abaixo, o perfil do terreno com o greide ótimo do trilho](docs/img/rio_sp_v1.png)
 
 Sem receber nenhuma indicação de caminho, o otimizador encontrou o **Vale do Paraíba**, o mesmo
 corredor da Dutra e da antiga Central do Brasil, e desceu a **Serra das Araras em túnel**, na
@@ -130,23 +130,25 @@ Pré-requisito: [pixi](https://pixi.sh). Ele instala Python, GDAL e os solvers i
 e no Linux.
 
 ```bash
-pixi install                    # cria o ambiente (≈ 3,5 GB, uma vez)
-pixi run test                   # testes
-pixi run trembr --help          # linha de comando
-pixi run trembr dados catalogo  # as fontes de dados e o status de cada uma
-pixi run dados-base             # mapa base do IBGE: país, UFs, municípios, Censo 2022
-pixi run trembr dados relevo     # relevo da região (Copernicus 90 m, ~0,5 GB)
-pixi run trembr dados cidades    # sedes, PIB, REGIC 2018, áreas urbanizadas 2022
-pixi run trembr dados transporte # rodovias, ferrovias, aeroportos (OSM, ~0,9 GB)
-pixi run trembr dados protegidas # unidades de conservação (CNUC) e terras indígenas
-pixi run atlas                  # atlas: figuras + mapa interativo → resultados/atlas/sudeste
-pixi run estudo-sp-rj           # corredor + greide SP–RJ → resultados/sp_rj_as350
-pixi run estudo-rio-sp-v2       # v2: paradas escolhidas pelo otimizador → resultados/rio_sp_v2
-pixi run -e nb lab              # JupyterLab, com lonboard para mapas grandes
+pixi install               # cria o ambiente (≈ 3,5 GB, uma vez)
+pixi run dados             # baixa e prepara todas as camadas do Sudeste (≈ 2 GB, ~40 min na 1ª vez)
+pixi run atlas             # figuras + mapa interativo → resultados/atlas/sudeste
+pixi run mapa              # abre o mapa interativo no navegador
+pixi run estudo-rio-sp-v1  # Rio–SP só com relevo        → resultados/rio_sp/v1
+pixi run estudo-rio-sp-v2  # Rio–SP com cidades          → resultados/rio_sp/v2
+pixi run test              # testes (incluem otimalidade contra força bruta)
+pixi run trembr --help     # todos os comandos
 ```
 
-Outra norma de projeto, por exemplo intercidades a 200 km/h:
-`pixi run trembr estudo sp-rj --norma ic200`.
+**O mapa interativo** é um arquivo HTML só, que abre direto do disco. Ele tem:
+- camadas que ligam e desligam, com legenda;
+- busca de cidade e clique para ver os dados;
+- nomes de lugares por cima do relevo.
+
+Ele precisa de internet só para a biblioteca do mapa e o fundo de ruas.
+
+**Outra norma de projeto** (ex.: intercidades a 200 km/h): copie `config/estudos/rio_sp.yaml`,
+troque `norma: ic200` e rode `pixi run trembr estudo rio-sp --versao 1 --config <nome>`.
 
 **Dados e disco.** Os modelos de relevo são lidos por streaming (Cloud-Optimized GeoTIFF): só a
 janela necessária é baixada. Para o estudo nacional em 30 m, aponte os dados para um disco
@@ -159,15 +161,17 @@ $env:TREMBR_DADOS = "E:\trem-brasil-dados"
 ## Estrutura
 
 ```
-config/normas/      parâmetros geométricos (rampa, raios, plataforma), com fonte
-config/custos/      custos unitários e limites geotécnicos (hoje: placeholder)
+config/             premissas com fonte: normas, custos, corredor, regiões, estudos
 data/catalogo.yaml  as fontes de dados: licença, uso, status
-data/raw|interim|processed   (fora do git; recriados pelo pipeline)
-docs/               metodologia, roteiro, figuras
-src/trembr/         pacote: fontes, terreno, tracado, demanda, rede, operacao, avaliacao, estudos
+data/raw|interim|processed   (fora do git; recriados por `pixi run dados`)
+docs/               metodologia, roteiro, arquitetura, figuras
+src/trembr/         fontes/ terreno/ tracado/ estudos/ atlas/ (+ demanda, rede… planejados)
 tests/              testes, incluindo otimalidade contra força bruta
-resultados/         saídas dos estudos (fora do git)
+resultados/         saídas: atlas/<região>/ e <estudo>/v<N>/ (fora do git)
 ```
+
+Quem faz o quê e como acrescentar uma fonte, camada ou estudo:
+**[docs/arquitetura.md](docs/arquitetura.md)**.
 
 <details>
 <summary><b>Stack</b></summary>

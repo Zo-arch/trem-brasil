@@ -1,4 +1,9 @@
-"""Download em streaming para arquivos grandes, com proveniência da URL final (após redirects)."""
+"""Download de fontes de dados: streaming para o disco, TLS do sistema e proveniência.
+
+Todo download do projeto passa por ``baixar``: o arquivo vai direto para o disco em pedaços
+(serve para 1 KB ou 1 GB), e ganha um ``.proveniencia.json`` com a URL final, a data, a
+licença e o SHA-256.
+"""
 
 from __future__ import annotations
 
@@ -17,7 +22,7 @@ def contexto_tls() -> ssl.SSLContext:
     return truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 
 
-def baixar_grande(
+def baixar(
     url: str,
     destino: Path,
     *,

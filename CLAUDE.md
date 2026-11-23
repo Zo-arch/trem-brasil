@@ -5,7 +5,8 @@ identificadores de domínio em português.
 
 ## Comandos
 - `pixi run test` / `pixi run lint` / `pixi run fmt` — rodar antes de dar trabalho por concluído.
-- `pixi run trembr --help` — CLI (typer). Estudos em `src/trembr/estudos/`.
+- `pixi run dados` / `atlas` / `mapa` / `estudo-rio-sp-v1|v2` — dados, atlas, estudos.
+- `pixi run trembr --help` — CLI (typer). Arquitetura em `docs/arquitetura.md`.
 - No PowerShell, usar `$env:PYTHONIOENCODING="utf-8"` para a saída do rich com acentos.
 
 ## Regras do projeto
@@ -24,7 +25,10 @@ identificadores de domínio em português.
 - `tracado/perfil.py` — greide ótimo por programação dinâmica, estado (cota, rampa).
 - `tracado/corredor.py` — A* 16 direções em numba; Dijkstra de uma origem para vários destinos.
 - `tracado/paradas.py` — fronteira de Pareto exata custo × gente para escolher paradas (DP com rótulos).
-- `estudos/rio_sp.py` + `config/estudos/rio_sp.yaml` — estudo Rio–SP v2 (relevo + cidades).
+- `estudos/rio_sp.py` + `config/estudos/rio_sp.yaml` — estudo Rio–SP, uma `rodar_vN` por versão;
+  resultados em `resultados/rio_sp/vN/`. Figuras em `estudos/figuras.py`.
+- `fontes/baixar.py` — único caminho de download (streaming, TLS do sistema, proveniência).
+- `visual.py` — paleta e números pt-BR. `config/corredor/` — superfície de custo (não calibrada).
 - `terreno/superficie_custo.py` — proxy de custo para o corredor (não calibrado).
 - `regiao.py` + `config/regioes.yaml` — regiões de estudo (Sudeste primeiro), recorte com margem em metros.
 - `atlas/` — figura PNG por camada + mapa interativo (MapLibre, HTML único). Camada nova = módulo

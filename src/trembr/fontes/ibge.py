@@ -5,11 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 
 import geopandas as gpd
-import httpx
 import pandas as pd
 
-from trembr import proveniencia
 from trembr.crs import SIRGAS2000
+from trembr.fontes.baixar import baixar
 from trembr.paths import BRUTOS, PROCESSADOS, garantir
 
 URL_POPULACAO = "https://apisidra.ibge.gov.br/values/t/4709/n6/all/v/93/p/2022"
@@ -44,24 +43,18 @@ UF_NOME = {
 REGIAO_POR_DIGITO = {1: "Norte", 2: "Nordeste", 3: "Sudeste", 4: "Sul", 5: "Centro-Oeste"}
 
 
-def baixar(url: str, destino: Path, fonte_id: str, forcar: bool) -> Path:
-    if destino.exists() and not forcar:
-        return destino
-    with httpx.Client(
-        timeout=300, follow_redirects=True, headers={"User-Agent": "trembr/0.1"}
-    ) as c:
-        r = c.get(url)
-        r.raise_for_status()
-    destino.write_bytes(r.content)
-    proveniencia.registrar(destino, fonte_id=fonte_id, urls=[url], licenca=LICENCA)
-    return destino
+def baixar_ibge(url: str, destino: Path, fonte_id: str, forcar: bool) -> Path:
+    """Download de um arquivo do IBGE, com a licença do IBGE na proveniência."""
+    return baixar(url, destino, fonte_id=fonte_id, licenca=LICENCA, forcar=forcar)
 
 
 def preparar_municipios(*, forcar: bool = False) -> Path:
     """GeoParquet com código IBGE, nome, UF, população 2022 e polígono de cada município."""
     pasta = garantir(BRUTOS / "ibge")
-    arq_pop = baixar(URL_POPULACAO, pasta / "sidra_4709_pop2022.json", "ibge_censo2022_pop", forcar)
-    arq_malha = baixar(
+    arq_pop = baixar_ibge(
+        URL_POPULACAO, pasta / "sidra_4709_pop2022.json", "ibge_censo2022_pop", forcar
+    )
+    arq_malha = baixar_ibge(
         URL_MALHA, pasta / "malha_municipios.geojson", "ibge_malha_municipal", forcar
     )
 
@@ -94,12 +87,12 @@ def preparar_base(*, forcar: bool = False) -> dict[str, Path]:
     pasta = garantir(BRUTOS / "ibge")
     saida = garantir(PROCESSADOS / "ibge")
 
-    arq_pais = baixar(URL_MALHA_PAIS, pasta / "malha_pais.geojson", "ibge_malha_uf", forcar)
+    arq_pais = baixar_ibge(URL_MALHA_PAIS, pasta / "malha_pais.geojson", "ibge_malha_uf", forcar)
     pais = gpd.read_file(arq_pais).set_crs(SIRGAS2000, allow_override=True)
     pais = gpd.GeoDataFrame({"nome": ["Brasil"]}, geometry=[pais.union_all()], crs=SIRGAS2000)
     pais.to_parquet(saida / "pais.parquet")
 
-    arq_ufs = baixar(URL_MALHA_UF, pasta / "malha_ufs.geojson", "ibge_malha_uf", forcar)
+    arq_ufs = baixar_ibge(URL_MALHA_UF, pasta / "malha_ufs.geojson", "ibge_malha_uf", forcar)
     ufs = gpd.read_file(arq_ufs).set_crs(SIRGAS2000, allow_override=True)
     ufs["cod_uf"] = ufs["codarea"].astype(int)
     ufs["uf"] = ufs["cod_uf"].map(UF_SIGLA)

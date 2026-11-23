@@ -1,0 +1,20 @@
+# Parâmetros do corredor (camada 2): superfície de custo e suavização da rota do raster.
+#
+# STATUS: NÃO CALIBRADO. Escolhas iniciais, documentadas em docs/metodologia.md (camada 2).
+# Calibração planejada (roteiro, Fase 2 · v6): regressão do custo ótimo do greide contra a
+# rugosidade e a declividade em milhares de trechos amostrados.
+status: nao_calibrado
+
+superficie:
+  janela_m: 1500             # janela da rugosidade (desvio-padrão do terreno sem tendência)
+  comprimento_rampa_m: 1000  # comprimento característico do excesso de declividade
+  cota_agua_m: 0.5           # cota abaixo da qual a célula é mar (proibida)
+
+suavizacao:
+  # A rota do A* anda em degraus de 90 m; simplificação (Douglas–Peucker) + Chaikin.
+  # Versão de triagem: o raio mínimo de curva só é imposto na Fase 2 · v5.
+  tolerancia_m: 500
+  iteracoes: 5
+
+fontes:
+  - "Escolha inicial do projeto (ver cabeçalho); calibração na Fase 2 · v6"

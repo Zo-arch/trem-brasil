@@ -22,7 +22,7 @@ import pyogrio
 
 from trembr import proveniencia
 from trembr.crs import SIRGAS2000
-from trembr.fontes.baixar import baixar_grande
+from trembr.fontes.baixar import baixar
 from trembr.paths import BRUTOS, PROCESSADOS, garantir
 
 URL_CNUC = (
@@ -74,7 +74,7 @@ def _tis(zips: list[Path]) -> gpd.GeoDataFrame:
 
 def preparar_areas_protegidas(*, forcar: bool = False, log=print) -> dict[str, Path]:
     arquivos = {}
-    cnuc = baixar_grande(
+    cnuc = baixar(
         URL_CNUC,
         BRUTOS / "mma" / "shp_cnuc_2025_08.zip",
         fonte_id="cnuc_ucs",

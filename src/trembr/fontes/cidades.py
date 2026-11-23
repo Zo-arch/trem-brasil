@@ -15,7 +15,7 @@ import pandas as pd
 import pyogrio
 
 from trembr.crs import SIRGAS2000
-from trembr.fontes.ibge import baixar, preparar_municipios
+from trembr.fontes.ibge import baixar_ibge, preparar_municipios
 from trembr.paths import BRUTOS, PROCESSADOS, garantir
 
 _GEOFTP = "https://geoftp.ibge.gov.br/organizacao_do_territorio"
@@ -63,7 +63,7 @@ def _pib(arq_json: Path) -> pd.DataFrame:
 
 def preparar_areas_urbanizadas(*, forcar: bool = False) -> Path:
     pasta = garantir(BRUTOS / "ibge")
-    arq = baixar(
+    arq = baixar_ibge(
         URL_AREAS_URBANIZADAS,
         pasta / "AreasUrbanizadas2022_Brasil.zip",
         "ibge_areas_urbanizadas",
@@ -106,11 +106,13 @@ def preparar_cidades(*, forcar: bool = False) -> dict[str, Path]:
     """Sedes + população + PIB + REGIC por município, e a agregação por "cidade" do REGIC."""
     pasta = garantir(BRUTOS / "ibge")
     sedes = _sedes(
-        baixar(URL_LOCALIDADES, pasta / "Localidades_Brasil_gpkg.zip", "ibge_localidades", forcar)
+        baixar_ibge(
+            URL_LOCALIDADES, pasta / "Localidades_Brasil_gpkg.zip", "ibge_localidades", forcar
+        )
     )
-    pib = _pib(baixar(URL_PIB, pasta / "sidra_5938_pib.json", "ibge_pib_municipal", forcar))
+    pib = _pib(baixar_ibge(URL_PIB, pasta / "sidra_5938_pib.json", "ibge_pib_municipal", forcar))
     regic = _regic(
-        baixar(URL_REGIC, pasta / "REGIC2018_Municipios_Hierarquia.xlsx", "ibge_regic", forcar)
+        baixar_ibge(URL_REGIC, pasta / "REGIC2018_Municipios_Hierarquia.xlsx", "ibge_regic", forcar)
     )
     mun = gpd.read_parquet(preparar_municipios(forcar=False)).drop(columns="geometry")
 

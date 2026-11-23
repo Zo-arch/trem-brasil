@@ -90,3 +90,28 @@ def carregar_norma(nome: str = "as350") -> Norma:
 
 def carregar_custos(nome: str = "referencia") -> ModeloCustos:
     return ModeloCustos(id=nome, **_ler_yaml(CONFIG / "custos" / f"{nome}.yaml"))
+
+
+class Superficie(BaseModel):
+    janela_m: float = Field(gt=0)
+    comprimento_rampa_m: float = Field(gt=0)
+    cota_agua_m: float
+
+
+class Suavizacao(BaseModel):
+    tolerancia_m: float = Field(gt=0)
+    iteracoes: int = Field(ge=0)
+
+
+class ParamCorredor(BaseModel):
+    """Superfície de custo e suavização da rota (``config/corredor``)."""
+
+    id: str
+    status: Literal["nao_calibrado", "calibrado"]
+    superficie: Superficie
+    suavizacao: Suavizacao
+    fontes: list[str]
+
+
+def carregar_corredor(nome: str = "referencia") -> ParamCorredor:
+    return ParamCorredor(id=nome, **_ler_yaml(CONFIG / "corredor" / f"{nome}.yaml"))

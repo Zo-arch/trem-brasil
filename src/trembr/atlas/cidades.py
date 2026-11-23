@@ -21,9 +21,9 @@ from shapely.geometry import box
 from trembr.atlas import estilo
 from trembr.atlas.web import CamadaWeb, ladrilhos, para_geojson
 from trembr.crs import SIRGAS2000
-from trembr.graficos import TINTA, TINTA_2
 from trembr.paths import PROCESSADOS
 from trembr.regiao import Regiao
+from trembr.visual import TINTA, TINTA_2, fmt_int
 
 ID = "cidades"
 NOME = "Cidades"
@@ -164,7 +164,7 @@ def _mancha_web(regiao: Regiao) -> list[dict]:
     return ladrilhos(rgba, transform, "PNG")
 
 
-def web(regiao: Regiao) -> list[CamadaWeb]:
+def _camadas(regiao: Regiao) -> list[CamadaWeb]:
     cid = cidades(regiao).sort_values("populacao_2022", ascending=False)
     cid["pib_bi_reais"] = (cid["pib_mil_reais"] / 1e6).round(1)
     cid["hierarquia"] = cid["regic_grupo"] + " (" + cid["regic_nivel"] + ")"
@@ -184,6 +184,7 @@ def web(regiao: Regiao) -> list[CamadaWeb]:
                 "raster-resampling": "nearest",
             },
             cor=COR_URBANA["Densa"],
+            legenda=[[cor, f"área urbanizada {d.lower()}"] for d, cor in COR_URBANA.items()],
             imagens=_mancha_web(regiao),
             ordem=15,
         ),
@@ -209,6 +210,8 @@ def web(regiao: Regiao) -> list[CamadaWeb]:
                 "circle-opacity": 0.9,
             },
             cor=GRUPOS[2][1],
+            legenda=[[cor, nome] for nome, cor in GRUPOS.values()]
+            + [["transparent", "área do círculo proporcional à população"]],
             geojson=para_geojson(
                 cid,
                 [
@@ -230,3 +233,96 @@ def web(regiao: Regiao) -> list[CamadaWeb]:
             ordem=60,
         ),
     ]
+
+
+def busca(regiao: Regiao) -> list[dict]:
+    """Índice da caixa de busca: a sede de cada município da região, com população e a
+    "cidade" do REGIC a que pertence."""
+    c = gpd.read_parquet(PROCESSADOS / "ibge" / "cidades.parquet")
+    c = c[c["uf"].isin(regiao.ufs)].sort_values("populacao_2022", ascending=False)
+    saida = []
+    for _, r in c.iterrows():
+        regic = (
+            r["regic_cidade"]
+            .replace("Arranjo Populacional de ", "")
+            .replace("Arranjo Populacional do ", "")
+        )
+        saida.append(
+            {
+                "n": f"{r['nome']} ({r['uf']})",
+                "c": [round(r.geometry.x, 5), round(r.geometry.y, 5)],
+                "d": (
+                    "<table>"
+                    f"<tr><td>População (2022)</td><td>{fmt_int(r['populacao_2022'])}</td></tr>"
+                    f"<tr><td>Cidade (REGIC)</td><td>{regic}</td></tr>"
+                    "</table>"
+                ),
+            }
+        )
+    return saida
+
+
+# Rótulos: (grupos REGIC, zoom mínimo, tamanho, fonte). Maiores primeiro; o MapLibre esconde os
+# que colidem, dando prioridade às cidades mais populosas.
+NIVEIS_ROTULO = [
+    ((1, 2), 0, 13, "Open Sans Semibold"),
+    ((3,), 7, 12, "Open Sans Semibold"),
+    ((4,), 8, 11.5, "Open Sans Regular"),
+    ((5,), 9.5, 11, "Open Sans Regular"),
+]
+
+
+def rotulos_web(regiao: Regiao) -> list[CamadaWeb]:
+    """Nomes das cidades (REGIC) por nível de zoom e, de perto, de todos os municípios."""
+    cid = cidades(regiao)
+    cid["rotulo"] = cid["nome"].str.rsplit("/", n=1).str[0]
+    mun = gpd.read_parquet(PROCESSADOS / "ibge" / "cidades.parquet")
+    mun = mun[mun["uf"].isin(regiao.ufs)].rename(columns={"nome": "rotulo"})
+    base_layout = {
+        "text-field": ["get", "rotulo"],
+        "text-variable-anchor": ["left", "right", "top", "bottom"],
+        "text-radial-offset": 0.7,
+        "text-justify": "auto",
+        "symbol-sort-key": ["-", 0, ["get", "populacao_2022"]],
+    }
+    pintura = {"text-color": TINTA, "text-halo-color": "#ffffff", "text-halo-width": 1.6}
+    camadas = []
+    for i, (grupos, zoom, tamanho, fonte) in enumerate(NIVEIS_ROTULO):
+        sel = cid[cid["regic_grupo_ord"].isin(grupos)]
+        camadas.append(
+            CamadaWeb(
+                id="rotulos" if i == 0 else f"rotulos_{i}",
+                nome="Nomes das cidades",
+                grupo=NOME,
+                tipo="symbol",
+                pintura=pintura,
+                cor="#ffffff",
+                geojson=para_geojson(sel, ["rotulo", "populacao_2022"]),
+                layout=base_layout | {"text-size": tamanho, "text-font": [fonte]},
+                minzoom=zoom,
+                ordem=80 - i,
+                alterna_com=None if i == 0 else "rotulos",
+                no_painel=i == 0,
+            )
+        )
+    camadas.append(
+        CamadaWeb(
+            id="rotulos_municipios",
+            nome="Nomes dos municípios",
+            grupo=NOME,
+            tipo="symbol",
+            pintura=pintura | {"text-color": TINTA_2},
+            cor="#ffffff",
+            geojson=para_geojson(mun, ["rotulo", "populacao_2022"]),
+            layout=base_layout | {"text-size": 10.5, "text-font": ["Open Sans Regular"]},
+            minzoom=10,
+            ordem=75,
+            alterna_com="rotulos",
+            no_painel=False,
+        )
+    )
+    return camadas
+
+
+def web(regiao: Regiao) -> list[CamadaWeb]:
+    return _camadas(regiao) + rotulos_web(regiao)
