@@ -65,8 +65,8 @@ relativo, tempo de viagem), para mostrar o que cada ingrediente muda no traçado
 | Versão | Ingrediente novo | Estado |
 |---|---|---|
 | v1 | só relevo (Copernicus 90 m) | ✅ achou o Vale do Paraíba sozinho |
-| v2 | + cidades | próximo |
-| v3 | + obstáculos: mancha urbana, rios, áreas protegidas | |
+| v2 | + cidades | ✅ 4 paradas "de graça" no Vale do Paraíba |
+| v3 | + obstáculos: mancha urbana, rios, áreas protegidas | próximo |
 | v4 | + terreno nu (ANADEM 30 m) | |
 | v5 | + geometria de 350 km/h | |
 | v6 | + custos calibrados | |
@@ -78,6 +78,17 @@ ou município isolado, `cidades_regic.parquet`); o custo entre duas candidatas
 vem do A*; a escolha pesa a população atendida contra o custo de desviar. O peso entre "gente"
 e "custo" é varrido, gerando uma fronteira: de uma linha direta, sem paradas, até uma linha que
 atende todas as cidades grandes do caminho.
+
+*Resultado (nov/2026, `pixi run estudo-rio-sp-v2`).* São 11 candidatas e 20 rotas na fronteira.
+- **No caminho:** São José dos Campos, Guaratinguetá, Resende e Volta Redonda–Barra Mansa somam
+  2,4 milhões de pessoas por 0,3% a mais que a rota direta, que repete a v1 (410 × 412 km).
+- **Joelho:** a Baixada Santista acrescenta 1,7 milhão de pessoas, mas custa +23% e leva o túnel
+  de 4,6% para 13,1% do traçado (a linha desce e sobe a serra).
+- **Máximo:** passar nas 11 cidades exige um zigue-zague de 1.188 km.
+
+Limitação que pesa: o benefício é só a população. Parar não custa tempo a quem segue viagem, e
+uma cidade fora do eixo só pode ser atendida desviando a linha, nunca por ramal. As duas coisas
+entram com a demanda (Fase 3) e o tempo de viagem (v7).
 
 **v3 — obstáculos.** Mancha urbana (IBGE, Áreas Urbanizadas 2022): desapropriação cara, ou túnel. Rios (ANA):
 ponte obrigatória. Unidades de conservação de proteção integral e terras indígenas: barreira.

@@ -38,6 +38,26 @@ rampa máxima de 30‰.
 relevo usado é de superfície (inclui a copa das árvores), cidades e rios ainda não entram e os
 custos são placeholder. Cada uma dessas lacunas é um passo do roteiro.
 
+## Segundo resultado: o otimizador escolhe as paradas
+
+![Mapa Rio–SP com a rota direta e três rotas da fronteira: no caminho, joelho e máximo de gente](docs/img/rio_sp_v2_mapa.png)
+
+Na v2, as 11 cidades com mais de 100 mil habitantes ao alcance do corredor viram candidatas a
+parada. O otimizador calcula a fronteira de Pareto exata entre custo e gente atendida, testada
+contra força bruta, sem nenhum peso escolhido à mão:
+
+- **No caminho:** São José dos Campos, Guaratinguetá, Resende e Volta Redonda–Barra Mansa já
+  estão no corredor natural do Vale do Paraíba. A linha atende 2,4 milhões de pessoas por
+  **0,3% a mais** que a rota direta.
+- **Joelho da fronteira:** acrescentar a Baixada Santista leva a 4,1 milhões de pessoas, mas
+  custa 23% a mais e triplica a fração em túnel, porque a linha desce e sobe a Serra do Mar.
+  Talvez seja caso de ramal, não de passar a linha por lá; isso é pergunta para a Fase 3.
+- **Máximo de gente:** passar nas 11 cidades exige um zigue-zague de 1.188 km que custa 5 vezes
+  a rota direta.
+
+[Fronteira completa](docs/img/rio_sp_v2_fronteira.png) · método em
+[docs/metodologia.md](docs/metodologia.md) (seção 3d).
+
 ## O plano
 
 ```
@@ -54,8 +74,8 @@ anterior para ver o que ele muda no traçado:
 | Versão | O que entra | Estado |
 |---|---|---|
 | v1 | só relevo | ✅ |
-| v2 | cidades: o otimizador escolhe por onde passar, pesando gente atendida contra o custo do desvio | próximo |
-| v3 | obstáculos: áreas urbanas, rios, unidades de conservação, terras indígenas | |
+| v2 | cidades: o otimizador escolhe por onde passar, pesando gente atendida contra o custo do desvio | ✅ |
+| v3 | obstáculos: áreas urbanas, rios, unidades de conservação, terras indígenas | próximo |
 | v4 | terreno nu (ANADEM 30 m, sem árvores) | |
 | v5 | geometria de 350 km/h (curvas com raio ≥ 7 km) | |
 | v6 | custos calibrados com obras reais | |
@@ -121,6 +141,7 @@ pixi run trembr dados transporte # rodovias, ferrovias, aeroportos (OSM, ~0,9 GB
 pixi run trembr dados protegidas # unidades de conservação (CNUC) e terras indígenas
 pixi run atlas                  # atlas: figuras + mapa interativo → resultados/atlas/sudeste
 pixi run estudo-sp-rj           # corredor + greide SP–RJ → resultados/sp_rj_as350
+pixi run estudo-rio-sp-v2       # v2: paradas escolhidas pelo otimizador → resultados/rio_sp_v2
 pixi run -e nb lab              # JupyterLab, com lonboard para mapas grandes
 ```
 

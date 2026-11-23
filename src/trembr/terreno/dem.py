@@ -10,6 +10,7 @@ import rasterio
 from affine import Affine
 from rasterio.crs import CRS
 from rasterio.warp import Resampling, calculate_default_transform, reproject
+from rasterio.windows import Window, from_bounds
 from scipy.ndimage import map_coordinates
 
 
@@ -50,23 +51,47 @@ class Raster:
         )
 
 
-def carregar_reprojetado(caminho: Path, crs: str, resolucao_m: float) -> Raster:
-    """Reprojeta (bilinear) um DEM geográfico para CRS métrico com pixel quadrado."""
+def carregar_reprojetado(
+    caminho: Path,
+    crs: str,
+    resolucao_m: float,
+    limites: tuple[float, float, float, float] | None = None,
+) -> Raster:
+    """Reprojeta (bilinear) um DEM geográfico para CRS métrico com pixel quadrado.
+
+    ``limites`` (oeste, sul, leste, norte, no CRS do arquivo) recorta antes de reprojetar: dá
+    para tirar um estudo de caso de dentro do mosaico de uma região inteira sem lê-lo todo.
+    """
     destino_crs = CRS.from_user_input(crs)
     with rasterio.open(caminho) as src:
-        transform, largura, altura = calculate_default_transform(
-            src.crs, destino_crs, src.width, src.height, *src.bounds, resolution=resolucao_m
-        )
-        dados = np.full((altura, largura), np.nan, dtype=np.float32)
-        reproject(
-            source=rasterio.band(src, 1),
-            destination=dados,
-            src_transform=src.transform,
-            src_crs=src.crs,
-            src_nodata=src.nodata,
-            dst_transform=transform,
-            dst_crs=destino_crs,
-            dst_nodata=np.nan,
-            resampling=Resampling.bilinear,
-        )
+        if limites is None:
+            janela = Window(0, 0, src.width, src.height)
+        else:
+            janela = (
+                from_bounds(*limites, transform=src.transform)
+                .round_offsets()
+                .round_lengths()
+                .intersection(Window(0, 0, src.width, src.height))
+            )
+        origem = src.read(1, window=janela)
+        origem_transform = src.window_transform(janela)
+        origem_crs, nodata = src.crs, src.nodata
+    altura0, largura0 = origem.shape
+    esq, cima = origem_transform * (0, 0)
+    dir_, baixo = origem_transform * (largura0, altura0)
+    transform, largura, altura = calculate_default_transform(
+        origem_crs, destino_crs, largura0, altura0, esq, baixo, dir_, cima, resolution=resolucao_m
+    )
+    dados = np.full((altura, largura), np.nan, dtype=np.float32)
+    reproject(
+        source=origem,
+        destination=dados,
+        src_transform=origem_transform,
+        src_crs=origem_crs,
+        src_nodata=nodata,
+        dst_transform=transform,
+        dst_crs=destino_crs,
+        dst_nodata=np.nan,
+        resampling=Resampling.bilinear,
+    )
     return Raster(dados.astype(np.float64), transform, destino_crs)

@@ -127,6 +127,29 @@ def protegidas(forcar: bool = typer.Option(False, help="Baixar de novo mesmo com
         console.print(f"[green]ok[/] {tipo}: {len(gpd.read_parquet(arq)):,} polígonos → {arq.name}")
 
 
+@estudo.command("rio-sp-v2")
+def rio_sp_v2(config: str = typer.Option("rio_sp", help="Arquivo em config/estudos")) -> None:
+    """Rio–SP v2: relevo + cidades; o otimizador escolhe as paradas (fronteira de Pareto)."""
+    from trembr.estudos.rio_sp import rodar
+
+    resumo, figura = rodar(config, log=console.print)
+    t = Table(title="Rio–SP v2: rotas em destaque")
+    for col in ("rota", "paradas", "pessoas", "km", "túnel", "viaduto", "custo (km-eq)"):
+        t.add_column(col)
+    for nome, r in resumo["destaques"].items():
+        t.add_row(
+            nome,
+            ", ".join(p.rsplit("/", 1)[0] for p in r["paradas"]) or "—",
+            f"{r['populacao_atendida'] / 1e6:.2f} mi",
+            f"{r['extensao_km']:.0f}",
+            f"{r['pct_por_estrutura']['túnel']:.1f}%",
+            f"{r['pct_por_estrutura']['viaduto']:.1f}%",
+            f"{r['custo_corredor_km_eq']:.0f}",
+        )
+    console.print(t)
+    console.print(f"[green]figura:[/] {figura}  ({resumo['tempo_execucao_s']} s)")
+
+
 @app.command("atlas")
 def atlas(
     regiao: str = typer.Option("sudeste", help="Região em config/regioes.yaml"),

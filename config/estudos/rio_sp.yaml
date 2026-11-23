@@ -1,0 +1,26 @@
+# Estudo de caso Rio–São Paulo (Fase 2): a mesma linha, um ingrediente novo por versão.
+# Ver docs/roteiro.md. Cada número tem a justificativa ao lado.
+
+# Pontas nas estações previstas no projeto do TAV (Campo de Marte e Leopoldina), para comparar
+# com o estudo oficial (catálogo: estudos_tav_rj_sp). Mesmas da v1 (estudos/sp_rj.py).
+origem: {nome: "São Paulo (Campo de Marte)", lon: -46.637, lat: -23.509}
+destino: {nome: "Rio de Janeiro (Leopoldina)", lon: -43.211, lat: -22.903}
+
+norma: as350
+custos: referencia            # PLACEHOLDER: custos só como unidade relativa (km-equivalentes)
+resolucao_m: 90               # Copernicus GLO-90, recortado do mosaico regional do Sudeste
+passo_m: 100                  # estaqueamento desejado do greide (ajustado pela norma)
+crs: "EPSG:31983"             # SIRGAS 2000 / UTM 23S: SP e RJ estão no fuso 23
+
+v2:
+  # Candidatas a parada: "cidades" do REGIC 2018 (arranjo populacional ou município isolado),
+  # fora as das pontas. Escolhas iniciais, a varrer numa análise de sensibilidade:
+  populacao_min: 100000       # escolha inicial sem fonte: corte para manter o problema
+                              # pequeno; a fronteira dirá se cidades menores fariam diferença
+  folga_elipse: 0.30          # d(SP, c) + d(c, Rio) <= 1,30 · d(SP, Rio): a cidade não pode
+                              # alongar a viagem mais que 30% em linha reta (a v1 deu 1,15)
+  ufs: [SP, RJ, MG]
+  margem_km: 30               # margem do recorte de relevo em volta das candidatas
+  avanco_min_km: 5            # a parada tem de avançar ao longo do eixo SP→Rio (sem voltar)
+  tolerancia_no_caminho: 0.02 # rota "no caminho": a com mais gente entre as que custam até
+                              # 2% a mais que a direta (paradas praticamente de graça)

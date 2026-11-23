@@ -138,3 +138,108 @@ def caminho_minimo(
     if not np.isfinite(total):
         raise RuntimeError("Destino inalcançável a partir da origem")
     return rota, float(total)
+
+
+@njit(cache=True)
+def _dijkstra_varios(custo, r0, c0, alvos, res, offs, meio, n_meio):
+    """Dijkstra de uma origem até vários alvos (para quando todos estão fechados).
+
+    Mesmo modelo de movimento do A*; devolve o vetor de custos acumulados e os predecessores.
+    """
+    H, W = custo.shape
+    N = H * W
+    g = np.full(N, np.inf)
+    pred = np.full(N, -1, np.int64)
+    fechado = np.zeros(N, np.bool_)
+    comp = np.empty(offs.shape[0])
+    for m in range(offs.shape[0]):
+        comp[m] = math.hypot(offs[m, 0], offs[m, 1]) * res
+    eh_alvo = np.zeros(N, np.bool_)
+    faltam = 0
+    for k in range(alvos.shape[0]):
+        a = alvos[k, 0] * W + alvos[k, 1]
+        if not eh_alvo[a]:
+            eh_alvo[a] = True
+            faltam += 1
+
+    origem = r0 * W + c0
+    g[origem] = 0.0
+    fila = [(0.0, origem)]
+    while len(fila) > 0 and faltam > 0:
+        _, u = heapq.heappop(fila)
+        if fechado[u]:
+            continue
+        fechado[u] = True
+        if eh_alvo[u]:
+            faltam -= 1
+        ur = u // W
+        uc = u - ur * W
+        cu = custo[ur, uc]
+        for m in range(offs.shape[0]):
+            vr = ur + offs[m, 0]
+            vc = uc + offs[m, 1]
+            if vr < 0 or vr >= H or vc < 0 or vc >= W:
+                continue
+            v = vr * W + vc
+            if fechado[v]:
+                continue
+            cv = custo[vr, vc]
+            if not cv < np.inf:
+                continue
+            soma = cu + cv
+            ok = True
+            for t in range(n_meio[m]):
+                cm = custo[ur + meio[m, t, 0], uc + meio[m, t, 1]]
+                if not cm < np.inf:
+                    ok = False
+                    break
+                soma += cm
+            if not ok:
+                continue
+            novo = g[u] + comp[m] * soma / (2 + n_meio[m])
+            if novo < g[v]:
+                g[v] = novo
+                pred[v] = u
+                heapq.heappush(fila, (novo, v))
+    return g, pred
+
+
+def caminhos_a_partir_de(
+    custo_por_m: np.ndarray,
+    origem: tuple[int, int],
+    destinos: list[tuple[int, int]],
+    resolucao_m: float,
+    vizinhanca: int = 16,
+) -> list[tuple[np.ndarray, float]]:
+    """Caminhos de menor custo de uma origem até cada destino, numa só busca (Dijkstra).
+
+    Equivale a chamar ``caminho_minimo`` para cada destino, mas explora a grade uma vez só.
+    Destino inalcançável devolve (array vazio, inf).
+    """
+    if vizinhanca not in (8, 16):
+        raise ValueError("vizinhanca deve ser 8 ou 16")
+    custo = np.ascontiguousarray(custo_por_m, dtype=np.float64)
+    finitos = custo[np.isfinite(custo)]
+    if (finitos <= 0).any():
+        raise ValueError("custos devem ser positivos (use inf para proibir)")
+    for lin, col in [origem, *destinos]:
+        if not (0 <= lin < custo.shape[0] and 0 <= col < custo.shape[1]):
+            raise ValueError(f"ponto {(lin, col)} fora do raster")
+    offs, meio, n_meio = _vizinhanca(vizinhanca)
+    alvos = np.array(destinos, np.int64).reshape(-1, 2)
+    g, pred = _dijkstra_varios(custo, *origem, alvos, float(resolucao_m), offs, meio, n_meio)
+    W = custo.shape[1]
+    o = origem[0] * W + origem[1]
+    saida = []
+    for lin, col in destinos:
+        u = lin * W + col
+        if not np.isfinite(g[u]):
+            saida.append((np.empty((0, 2), np.int64), np.inf))
+            continue
+        celulas = [u]
+        while u != o:
+            u = pred[u]
+            celulas.append(u)
+        celulas = np.array(celulas[::-1], np.int64)
+        saida.append((np.column_stack([celulas // W, celulas % W]), float(g[lin * W + col])))
+    return saida

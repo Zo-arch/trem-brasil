@@ -112,6 +112,44 @@ clotoides ($R \ge R_{min}$) e otimizar os PIs junto com o greide. O greide ótim
 objetivo; a busca é metaheurística (CMA-ES ou NSGA-II via pymoo, para a fronteira custo × tempo),
 na linha de Jong & Schonfeld (2003) e Pu, Li & Schonfeld (2021).
 
+### 3d. Escolha das paradas de uma linha (`tracado/paradas.py`), Fase 2 · v2
+
+Na v2 do estudo Rio–SP, o otimizador decide sozinho por quais cidades a linha passa.
+
+1. **Candidatas.** São as "cidades" do REGIC 2018: um arranjo populacional (ex.: São José dos
+   Campos, com 10 municípios) ou um município isolado. Entram as que têm população mínima $P$ e
+   cabem numa elipse com focos nas pontas, $d(O, c) + d(c, D) \le (1 + \varepsilon)\, d(O, D)$.
+   Os valores de $P$ e $\varepsilon$ estão em `config/estudos/rio_sp.yaml`. A estação fica na
+   sede do município mais populoso da cidade.
+2. **Custos entre candidatas.** As candidatas são ordenadas pelo avanço ao longo do eixo
+   $O \to D$. Para cada par $i < j$, $C_{ij}$ é o custo do corredor ótimo na mesma superfície da
+   camada 2. Um Dijkstra de uma origem para vários destinos explora a grade uma vez por nó, em
+   vez de uma vez por par; o teste o compara ao A* rodado par a par.
+3. **Fronteira de Pareto exata.** Uma rota é uma sequência crescente de nós
+   $0 = v_0 < \dots < v_k = n-1$. Ela tem custo $\sum C_{v_{t-1} v_t}$ e benefício
+   $\sum b_{v_t}$, com $b$ a população das paradas. O grafo é acíclico, e uma programação
+   dinâmica com rótulos guarda em cada nó os pares (custo, benefício) não dominados. O resultado
+   é a fronteira inteira, inclusive os pontos que nenhuma soma ponderada encontraria. O teste
+   `test_fronteira_igual_a_forca_bruta` compara com a enumeração de todos os subconjuntos de
+   paradas (Hypothesis).
+4. **Rotas em destaque.** São três:
+   - a **direta** (mais barata);
+   - a de **máximo de gente**;
+   - o **joelho**, ponto da fronteira mais distante da reta entre os extremos, com custo e
+     benefício normalizados (*kneedle*; Satopää et al., 2011). É onde acrescentar paradas deixa
+     de compensar.
+
+   Cada uma passa pela suavização e pelo greide ótimo trecho a trecho, com a estação em nível.
+
+**Limitações** (todas no roteiro):
+
+1. O benefício é a população, um *proxy* de demanda. Parar custa tempo a quem segue viagem, e
+   isso ainda não está no objetivo (v7). A demanda de verdade entra na Fase 3.
+2. Só se anda para a frente no eixo $O \to D$: uma cidade "atrás" da origem não é candidata.
+3. Os custos são as razões de preço placeholder. Por isso aparecem em km-equivalentes (custo de
+   1 km de linha em terreno plano), nunca em R$.
+4. $P$ e $\varepsilon$ ainda não passaram por análise de sensibilidade.
+
 ## Camada 4 — Rede (planejado)
 
 Projeto de rede como MILP (Pyomo + HiGHS):
@@ -159,6 +197,8 @@ Projeto de rede como MILP (Pyomo + HiGHS):
 - Pu, H., Li, W., & Schonfeld, P. et al. (2021). Concurrent optimization of mountain railway
   alignment and station locations using a 3D distance transform. *IEEE Access*.
 - Saltelli, A. et al. (2008). *Global Sensitivity Analysis: The Primer*. Wiley.
+- Satopää, V., Albrecht, J., Irwin, D., & Raghavan, B. (2011). Finding a "kneedle" in a haystack:
+  Detecting knee points in system behavior. *31st ICDCS Workshops*, 166–171.
 - Santos Silva, J. M. C., & Tenreyro, S. (2006). The log of gravity. *Review of Economics and
   Statistics*, 88(4), 641–658.
 - Banco Mundial (2014). *High-Speed Railways in China: A Look at Construction Costs*.

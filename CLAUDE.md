@@ -22,7 +22,9 @@ identificadores de domínio em português.
 ## Mapa do código
 - `tracado/secao.py` — custo por metro de aterro/corte/viaduto/túnel (numba).
 - `tracado/perfil.py` — greide ótimo por programação dinâmica, estado (cota, rampa).
-- `tracado/corredor.py` — A* 16 direções em numba.
+- `tracado/corredor.py` — A* 16 direções em numba; Dijkstra de uma origem para vários destinos.
+- `tracado/paradas.py` — fronteira de Pareto exata custo × gente para escolher paradas (DP com rótulos).
+- `estudos/rio_sp.py` + `config/estudos/rio_sp.yaml` — estudo Rio–SP v2 (relevo + cidades).
 - `terreno/superficie_custo.py` — proxy de custo para o corredor (não calibrado).
 - `regiao.py` + `config/regioes.yaml` — regiões de estudo (Sudeste primeiro), recorte com margem em metros.
 - `atlas/` — figura PNG por camada + mapa interativo (MapLibre, HTML único). Camada nova = módulo

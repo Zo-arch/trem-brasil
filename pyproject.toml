@@ -89,6 +89,7 @@ fmt = "ruff format src tests"
 dados-base = "trembr dados base"
 atlas = "trembr atlas"
 estudo-sp-rj = "trembr estudo sp-rj"
+estudo-rio-sp-v2 = "trembr estudo rio-sp-v2"
 
 [tool.pixi.feature.nb.tasks]
 lab = "jupyter lab --notebook-dir notebooks"
