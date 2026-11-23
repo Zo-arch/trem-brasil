@@ -176,6 +176,7 @@ const map = new maplibregl.Map({
     ],
   },
 });
+map.on("error", e => window.__erros.push(String(e.error?.message || e.error || e)));
 map.addControl(new maplibregl.NavigationControl(), "top-right");
 map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-right");
 

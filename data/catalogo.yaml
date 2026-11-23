@@ -118,12 +118,25 @@ fontes:
 
   # ---------------------------------------------------------------- infraestrutura existente
   - id: osm_brasil
-    nome: OpenStreetMap — recorte Brasil
+    nome: OpenStreetMap — extratos regionais do Brasil
     camada: infraestrutura
     provedor: Geofabrik
     url: https://download.geofabrik.de/south-america/brazil.html
     licenca: ODbL 1.0
-    uso: Ferrovias, rodovias, estações, aeroportos; faixas de domínio que podem ser compartilhadas
+    uso: Ferrovias, rodovias, estações, aeroportos; contexto, "atalho" (faixa já aberta) e concorrência
+    status: implementado
+    confirmado: true
+    notas: >-
+      Extrato por macrorregião (sudeste-latest → arquivo datado, gravado na proveniência), filtrado
+      com osmium tags-filter. Pista dupla é mapeada como duas linhas: não somar km sem tratar isso.
+
+  - id: dnit_snv
+    nome: Sistema Nacional de Viação (SNV) — rodovias federais e estaduais
+    camada: infraestrutura
+    provedor: DNIT
+    url: https://www.gov.br/dnit/pt-br/assuntos/atlas-e-mapas/pnv-e-snv
+    licenca: Pública
+    uso: Conferência oficial da classe e da jurisdição das rodovias do OSM
     status: planejado
     confirmado: false
 

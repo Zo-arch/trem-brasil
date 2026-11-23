@@ -74,6 +74,9 @@ que mostra tudo junto, com zoom e camadas que ligam e desligam (`pixi run atlas`
 <td align="center" width="33%"><a href="docs/img/atlas/02_relevo.png"><img src="docs/img/atlas/02_relevo.png" alt="Relevo do Sudeste com sombreamento; ponto mais alto no Pico da Bandeira"></a><br><sub><b>2 · Relevo</b><br>Copernicus 90 m; o ponto mais alto cai no Pico da Bandeira</sub></td>
 <td align="center" width="33%"><a href="docs/img/atlas/03_cidades.png"><img src="docs/img/atlas/03_cidades.png" alt="Cidades do Sudeste por hierarquia urbana e população, com a mancha urbana"></a><br><sub><b>3 · Cidades</b><br>1.344 cidades do REGIC; as 5 metrópoles têm 49% da população</sub></td>
 </tr>
+<tr>
+<td align="center" width="33%"><a href="docs/img/atlas/04_transporte.png"><img src="docs/img/atlas/04_transporte.png" alt="Rodovias, ferrovias e aeroportos do Sudeste segundo o OpenStreetMap"></a><br><sub><b>4 · Transporte existente</b><br>rodovias, ferrovias em operação e desativadas, 82 aeroportos</sub></td>
+</tr>
 </table>
 
 ## Como funciona
@@ -113,6 +116,7 @@ pixi run trembr dados catalogo  # as fontes de dados e o status de cada uma
 pixi run dados-base             # mapa base do IBGE: país, UFs, municípios, Censo 2022
 pixi run trembr dados relevo     # relevo da região (Copernicus 90 m, ~0,5 GB)
 pixi run trembr dados cidades    # sedes, PIB, REGIC 2018, áreas urbanizadas 2022
+pixi run trembr dados transporte # rodovias, ferrovias, aeroportos (OSM, ~0,9 GB)
 pixi run atlas                  # atlas: figuras + mapa interativo → resultados/atlas/sudeste
 pixi run estudo-sp-rj           # corredor + greide SP–RJ → resultados/sp_rj_as350
 pixi run -e nb lab              # JupyterLab, com lonboard para mapas grandes

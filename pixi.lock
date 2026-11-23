@@ -83,7 +83,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libarrow-s3-26.0.1-hb32f990_5_cpu.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libarrow-substrait-26.0.1-hbad6200_5_cpu.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libblas-3.11.0-12_h4a7cf45_openblas.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libboost-1.88.0-hd24cca6_7.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libboost-1.90.0-h1101c1b_3.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libbrotlicommon-1.2.1-h39a168f_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libbrotlidec-1.2.1-ha411449_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libbrotlienc-1.2.1-h018ffa1_1.conda
@@ -195,6 +195,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/openpyxl-3.1.5-py312hafd94c1_5.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/openssl-3.6.5-h781a0a9_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/orc-2.3.1-h7b2d648_2.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/osmium-tool-1.19.1-hb98eb3d_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pandas-3.1.1-np2py312h91ec553_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pcre2-10.47-h8b3dc9c_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pillow-13.0.0-py312h38079b3_1.conda
@@ -225,7 +226,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/s2n-1.7.7-ha5dc4ae_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/scikit-image-0.26.0-np2py312h4ae17e4_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/scikit-learn-1.9.1-np2py312h91ec553_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/scip-10.0.2-hbf6308b_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/scip-10.0.1-hd8b5c82_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/scipy-1.18.1-py312he827f4e_4.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/shapely-2.2.0-np2py312h224e744_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/simdjson-5.1.1-h4dbf13b_0.conda
@@ -600,6 +601,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/openpyxl-3.1.5-py312h83acffa_5.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/openssl-3.6.5-hf411b9b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/orc-2.3.1-h4dea993_2.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/osmium-tool-1.19.1-h60971b7_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pandas-3.1.1-np2py312hea30aaf_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pcre2-10.47-h8466c1e_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pillow-13.0.0-py312h7bb5964_1.conda
@@ -729,7 +731,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libarrow-s3-26.0.1-hb32f990_5_cpu.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libarrow-substrait-26.0.1-hbad6200_5_cpu.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libblas-3.11.0-12_h4a7cf45_openblas.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libboost-1.88.0-hd24cca6_7.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libboost-1.90.0-h1101c1b_3.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libbrotlicommon-1.2.1-h39a168f_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libbrotlidec-1.2.1-ha411449_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libbrotlienc-1.2.1-h018ffa1_1.conda
@@ -842,6 +844,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/openpyxl-3.1.5-py312hafd94c1_5.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/openssl-3.6.5-h781a0a9_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/orc-2.3.1-h7b2d648_2.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/osmium-tool-1.19.1-hb98eb3d_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pandas-3.1.1-np2py312h91ec553_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pcre2-10.47-h8b3dc9c_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/pillow-13.0.0-py312h38079b3_1.conda
@@ -875,7 +878,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/s2n-1.7.7-ha5dc4ae_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/scikit-image-0.26.0-np2py312h4ae17e4_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/scikit-learn-1.9.1-np2py312h91ec553_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/scip-10.0.2-hbf6308b_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/scip-10.0.1-hd8b5c82_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/scipy-1.18.1-py312he827f4e_4.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/shapely-2.2.0-np2py312h224e744_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/simdjson-5.1.1-h4dbf13b_0.conda
@@ -1403,6 +1406,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/openpyxl-3.1.5-py312h83acffa_5.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/openssl-3.6.5-hf411b9b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/orc-2.3.1-h4dea993_2.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/osmium-tool-1.19.1-h60971b7_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pandas-3.1.1-np2py312hea30aaf_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pcre2-10.47-h8466c1e_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pillow-13.0.0-py312h7bb5964_1.conda
@@ -2106,7 +2110,7 @@ packages:
   license: MIT
   license_family: MIT
   purls:
-  - pkg:pypi/debugpy?source=hash-mapping
+  - pkg:pypi/debugpy?source=compressed-mapping
   run_exports: {}
   size: 2842039
   timestamp: 1793558459911
@@ -2742,25 +2746,25 @@ packages:
     - libblas >=3.11.0,<4.0a0
   size: 18102
   timestamp: 1793822074865
-- conda: https://conda.anaconda.org/conda-forge/linux-64/libboost-1.88.0-hd24cca6_7.conda
-  sha256: dd489228e1916c7720c925248d0ba12803d1dc8b9898be0c51f4ab37bab6ffa5
-  md5: d70e4dc6a847d437387d45462fe60cf9
+- conda: https://conda.anaconda.org/conda-forge/linux-64/libboost-1.90.0-h1101c1b_3.conda
+  sha256: 868cae2463765495b59ebc1146bd4089f2983439a1ac469eec36b09575b47162
+  md5: bcabb17507a7c82f12e9a0cc67fd57c7
   depends:
   - __glibc >=2.17,<3.0.a0
   - bzip2 >=1.0.8,<2.0a0
-  - icu >=78.1,<79.0a0
-  - libgcc >=14
-  - liblzma >=5.8.1,<6.0a0
-  - libstdcxx >=14
-  - libzlib >=1.3.1,<2.0a0
+  - icu >=78.3,<79.0a0
+  - libgcc >=15
+  - liblzma >=5.8.3,<6.0a0
+  - libstdcxx >=15
+  - libzlib >=1.3.2,<2.0a0
   - zstd >=1.5.7,<1.6.0a0
   constrains:
   - boost-cpp <0.0a0
   license: BSL-1.0
   purls: []
   run_exports: {}
-  size: 3072984
-  timestamp: 1766347479317
+  size: 3418609
+  timestamp: 1790022514193
 - conda: https://conda.anaconda.org/conda-forge/linux-64/libbrotlicommon-1.2.1-h39a168f_1.conda
   sha256: c8e66e6987a9c604e4677cb044331039296b4824b0bab566d3ad0b6932eb613e
   md5: 3e5df77c3184a1b3bd6209b1268b5bb1
@@ -4624,6 +4628,27 @@ packages:
     - orc >=2.3.1,<2.3.2.0a0
   size: 1452346
   timestamp: 1794086666002
+- conda: https://conda.anaconda.org/conda-forge/linux-64/osmium-tool-1.19.1-hb98eb3d_0.conda
+  sha256: eb8a7c6abfef0ebc9138d21ef171a336d1f84febc8ffd116b740fe34e8d7b36e
+  md5: 51eb818c7447fdc9b4555640fa94c8b9
+  depends:
+  - lz4-c
+  - bzip2
+  - libzlib
+  - libstdcxx >=15
+  - libgcc >=15
+  - __glibc >=2.17,<3.0.a0
+  - libzlib >=1.3.2,<2.0a0
+  - libexpat >=2.8.5,<3.0a0
+  - libboost >=1.90.0,<1.91.0a0
+  - bzip2 >=1.0.8,<2.0a0
+  - lz4-c >=1.10.0,<1.11.0a0
+  license: GPL-3.0-only
+  license_family: GPL
+  purls: []
+  run_exports: {}
+  size: 928278
+  timestamp: 1792794579201
 - conda: https://conda.anaconda.org/conda-forge/linux-64/pandas-3.1.1-np2py312h91ec553_0.conda
   sha256: bcbf9b1c9c040b343791536fdd6c5acd87e73f0c2d58859c9164756528626b34
   md5: d3c0f076ef954125c9c3db84794bc51b
@@ -4675,7 +4700,7 @@ packages:
   license: BSD-3-Clause
   license_family: BSD
   purls:
-  - pkg:pypi/pandas?source=hash-mapping
+  - pkg:pypi/pandas?source=compressed-mapping
   run_exports: {}
   size: 16917444
   timestamp: 1793811635284
@@ -5107,7 +5132,7 @@ packages:
   license: BSD-3-Clause
   license_family: BSD
   purls:
-  - pkg:pypi/pyzmq?source=hash-mapping
+  - pkg:pypi/pyzmq?source=compressed-mapping
   run_exports: {}
   size: 216444
   timestamp: 1793791645017
@@ -5363,29 +5388,28 @@ packages:
   run_exports: {}
   size: 9991814
   timestamp: 1790072954869
-- conda: https://conda.anaconda.org/conda-forge/linux-64/scip-10.0.2-hbf6308b_0.conda
-  sha256: 56bdcaa9a506776cfd04814663ac2332b5f863f7cec72e68fc13f493a1530699
-  md5: 4169674254e087f3473032f646ed81b0
+- conda: https://conda.anaconda.org/conda-forge/linux-64/scip-10.0.1-hd8b5c82_0.conda
+  sha256: a8b80f4f2ca2564d35e6e36a023b70effd4471da91c356eea7523a24276c445f
+  md5: 094a988812a7a5ab41324116d5e9a33a
   depends:
   - __glibc >=2.17,<3.0.a0
-  - libgfortran5 >=14.3.0
-  - libgfortran
-  - libgcc >=14
-  - libstdcxx >=14
-  - mpfr >=4.2.2,<5.0a0
-  - ipopt >=3.14.19,<3.14.20.0a0
   - gmp >=6.3.0,<7.0a0
+  - ipopt >=3.14.19,<3.14.20.0a0
   - libblas >=3.9.0,<4.0a0
-  - libzlib >=1.3.2,<2.0a0
+  - libgcc >=14
+  - libgfortran
+  - libgfortran5 >=14.3.0
+  - libstdcxx >=14
+  - libzlib >=1.3.1,<2.0a0
+  - mpfr >=4.2.1,<5.0a0
   - tbb >=2022.3.0
-  - libboost >=1.88.0,<1.89.0a0
   license: Apache-2.0 AND LGPL-3.0-or-later AND EPL-1.0 and MIT and Zlib and BSL-1.0 and HPND
   purls: []
   run_exports:
     weak:
-    - scip >=10.0.2,<11.0a0
-  size: 16233924
-  timestamp: 1775217740722
+    - scip >=10.0.1,<11.0a0
+  size: 14829825
+  timestamp: 1770284761234
 - conda: https://conda.anaconda.org/conda-forge/linux-64/scipy-1.18.1-py312he827f4e_4.conda
   sha256: a07178410c89fedf6e8e45be236d6db664293651a1ed71ff0a5595e3b3623e05
   md5: 4575d22c0fd54c8188ec251ee1d44578
@@ -5620,7 +5644,7 @@ packages:
   license: BSD-2-Clause
   license_family: BSD
   purls:
-  - pkg:pypi/wrapt?source=hash-mapping
+  - pkg:pypi/wrapt?source=compressed-mapping
   run_exports: {}
   size: 153549
   timestamp: 1793358802876
@@ -6147,7 +6171,7 @@ packages:
   license: BSD-3-Clause
   license_family: BSD
   purls:
-  - pkg:pypi/affine?source=hash-mapping
+  - pkg:pypi/affine?source=compressed-mapping
   run_exports: {}
   size: 22619
   timestamp: 1788134268940
@@ -6542,7 +6566,7 @@ packages:
   license: BSD-3-Clause
   license_family: BSD
   purls:
-  - pkg:pypi/dask?source=hash-mapping
+  - pkg:pypi/dask?source=compressed-mapping
   run_exports: {}
   size: 1071072
   timestamp: 1787845029550
@@ -7078,7 +7102,7 @@ packages:
   license: BSD-3-Clause
   license_family: BSD
   purls:
-  - pkg:pypi/ipywidgets?source=hash-mapping
+  - pkg:pypi/ipywidgets?source=compressed-mapping
   run_exports: {}
   size: 115707
   timestamp: 1787052940568
@@ -7174,7 +7198,7 @@ packages:
   license: MIT
   license_family: MIT
   purls:
-  - pkg:pypi/jsonschema?source=hash-mapping
+  - pkg:pypi/jsonschema?source=compressed-mapping
   run_exports: {}
   size: 82084
   timestamp: 1787579299493
@@ -7389,7 +7413,7 @@ packages:
   license: BSD-3-Clause
   license_family: BSD
   purls:
-  - pkg:pypi/jupyterlab?source=compressed-mapping
+  - pkg:pypi/jupyterlab?source=hash-mapping
   run_exports: {}
   size: 13298360
   timestamp: 1793975777861
@@ -7863,7 +7887,7 @@ packages:
   license: MIT
   license_family: MIT
   purls:
-  - pkg:pypi/polars?source=compressed-mapping
+  - pkg:pypi/polars?source=hash-mapping
   run_exports: {}
   size: 596323
   timestamp: 1793016606615
@@ -8494,7 +8518,7 @@ packages:
   license: BSD-3-Clause
   license_family: BSD
   purls:
-  - pkg:pypi/toolz?source=hash-mapping
+  - pkg:pypi/toolz?source=compressed-mapping
   run_exports: {}
   size: 56736
   timestamp: 1791368097449
@@ -8645,7 +8669,7 @@ packages:
   license: Apache-2.0
   license_family: APACHE
   purls:
-  - pkg:pypi/websocket-client?source=compressed-mapping
+  - pkg:pypi/websocket-client?source=hash-mapping
   run_exports: {}
   size: 78254
   timestamp: 1788531123810
@@ -8657,7 +8681,7 @@ packages:
   license: BSD-3-Clause
   license_family: BSD
   purls:
-  - pkg:pypi/widgetsnbextension?source=hash-mapping
+  - pkg:pypi/widgetsnbextension?source=compressed-mapping
   run_exports: {}
   size: 901988
   timestamp: 1787044664327
@@ -8708,7 +8732,7 @@ packages:
   license: BSD-3-Clause
   license_family: BSD
   purls:
-  - pkg:pypi/xyzservices?source=hash-mapping
+  - pkg:pypi/xyzservices?source=compressed-mapping
   run_exports: {}
   size: 53963
   timestamp: 1788530754725
@@ -11232,6 +11256,27 @@ packages:
     - orc >=2.3.1,<2.3.2.0a0
   size: 1465683
   timestamp: 1794086672019
+- conda: https://conda.anaconda.org/conda-forge/win-64/osmium-tool-1.19.1-h60971b7_0.conda
+  sha256: cbac55c919fdc8189fc25ea2c7dead293f587200d04e3cb4b7b5b8ecd0f835b0
+  md5: c5ea6678eb9b3a4c7de28dd592e68662
+  depends:
+  - lz4-c
+  - bzip2
+  - libzlib
+  - vc >=14.3,<15
+  - vc14_runtime >=14.44.35208
+  - ucrt >=10.0.20348.0
+  - libexpat >=2.8.1,<3.0a0
+  - lz4-c >=1.10.0,<1.11.0a0
+  - bzip2 >=1.0.8,<2.0a0
+  - libboost >=1.90.0,<1.91.0a0
+  - libzlib >=1.3.2,<2.0a0
+  license: GPL-3.0-only
+  license_family: GPL
+  purls: []
+  run_exports: {}
+  size: 557520
+  timestamp: 1784007948392
 - conda: https://conda.anaconda.org/conda-forge/win-64/pandas-3.1.1-np2py312hea30aaf_0.conda
   sha256: 0e2daea9c8b6d54ae75bcbf82927c02ca9bfceb24f120dc27f050946d7d82b6e
   md5: dbabf78e5ffc3d1dfd6f459e1e51b06a
@@ -11284,7 +11329,7 @@ packages:
   license: BSD-3-Clause
   license_family: BSD
   purls:
-  - pkg:pypi/pandas?source=hash-mapping
+  - pkg:pypi/pandas?source=compressed-mapping
   run_exports: {}
   size: 15440849
   timestamp: 1793811649778
@@ -11731,7 +11776,7 @@ packages:
   license: BSD-3-Clause
   license_family: BSD
   purls:
-  - pkg:pypi/pyzmq?source=hash-mapping
+  - pkg:pypi/pyzmq?source=compressed-mapping
   run_exports: {}
   size: 192016
   timestamp: 1793791729750
@@ -11842,7 +11887,7 @@ packages:
   license: MIT
   license_family: MIT
   purls:
-  - pkg:pypi/rpds-py?source=hash-mapping
+  - pkg:pypi/rpds-py?source=compressed-mapping
   run_exports: {}
   size: 222019
   timestamp: 1791202445742

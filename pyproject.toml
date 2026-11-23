@@ -67,6 +67,7 @@ pytest = "*"
 hypothesis = "*"
 ruff = "*"
 openpyxl = ">=3.1.5,<4"
+osmium-tool = ">=1.19.1,<2"
 
 [tool.pixi.pypi-dependencies]
 trembr = { path = ".", editable = true }

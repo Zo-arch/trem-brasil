@@ -42,7 +42,7 @@ um módulo em `src/trembr/fontes/`.
 | Validação do relevo | erro vertical de cada DEM contra referências de nível | `ibge_rede_altimetrica`, `fabdem` | |
 | Cidades e população | sedes, população, PIB, hierarquia urbana, arranjos populacionais | `ibge_censo2022_pop`, `ibge_localidades`, `ibge_pib_municipal`, `ibge_regic` | ✅ |
 | Uso do solo | mancha urbana, água, floresta | `ibge_areas_urbanizadas`, `mapbiomas` | ✅ mancha urbana (IBGE 2022) |
-| Transporte existente | rodovias, ferrovias, estações, aeroportos | `osm_brasil`, `ontl_ferrovias`, DNIT/SNV (a catalogar) | |
+| Transporte existente | rodovias, ferrovias, estações, aeroportos | `osm_brasil`, `ontl_ferrovias`, `dnit_snv` | ✅ OSM (conferência com DNIT e ONTL a fazer) |
 | Hidrografia | rios: cada travessia é uma ponte | `ana_bho` | |
 | Áreas protegidas | unidades de conservação, terras indígenas | `cnuc_ucs`, `funai_ti` | |
 | Geologia | litologia (custo de túnel e de corte) | `sgb_geologia` | |
@@ -50,6 +50,8 @@ um módulo em `src/trembr/fontes/`.
 | Custos e validação | custos unitários; estudo oficial do TAV | `sicro`, `bm_china_hsr_2014`, `transit_costs`, `estudos_tav_rj_sp` | |
 
 - [ ] **Entrega:** `trembr dados` baixando cada camada + um atlas (mapa do Brasil com as camadas).
+- [ ] Atlas nacional: o HTML único com dados embutidos já tem ~13 MB só com o Sudeste; para o
+  Brasil, passar os vetores para PMTiles servidos por um servidor local.
 - [ ] **Validação:** URL testada de verdade (`confirmado: true`), proveniência registrada e
   contagens conferidas contra números oficiais (ex.: 5.570 municípios e 203,1 milhões de
   habitantes no Censo 2022).

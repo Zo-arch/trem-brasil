@@ -16,9 +16,12 @@ regioes:
     # Margem em volta das UFs: corredores podem cruzar divisas (SP–Curitiba, BH–Brasília,
     # Rio–Salvador) e o A* precisa do relevo de fora para não "bater na parede" da borda.
     margem_km: 50
+    # extratos do OpenStreetMap no Geofabrik que cobrem a região (download.geofabrik.de)
+    osm_geofabrik: [south-america/brazil/sudeste]
 
   brasil:
     nome: Brasil
     ufs: [RO, AC, AM, RR, PA, AP, TO, MA, PI, CE, RN, PB, PE, AL, SE, BA,
           MG, ES, RJ, SP, PR, SC, RS, MS, MT, GO, DF]
     margem_km: 20
+    osm_geofabrik: [south-america/brazil]

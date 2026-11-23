@@ -99,6 +99,21 @@ def cidades(forcar: bool = typer.Option(False, help="Baixar de novo mesmo com ca
     )
 
 
+@dados.command("transporte")
+def transporte(
+    regiao: str = typer.Option("sudeste", help="Região em config/regioes.yaml"),
+    forcar: bool = typer.Option(False, help="Baixar de novo mesmo com cache"),
+) -> None:
+    """Rodovias, ferrovias, estações e aeroportos do OpenStreetMap (extrato do Geofabrik)."""
+    import geopandas as gpd
+
+    from trembr.fontes.osm import preparar_transporte
+
+    arquivos = preparar_transporte(regiao, forcar=forcar, log=console.print)
+    for tipo, arq in arquivos.items():
+        console.print(f"[green]ok[/] {tipo}: {len(gpd.read_parquet(arq)):,} feições → {arq.name}")
+
+
 @app.command("atlas")
 def atlas(
     regiao: str = typer.Option("sudeste", help="Região em config/regioes.yaml"),
