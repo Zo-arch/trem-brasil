@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from pathlib import Path
 
-from trembr.atlas import base, cidades, relevo, transporte
+from trembr.atlas import base, cidades, protegidas, relevo, transporte
 from trembr.atlas.web import CamadaWeb, montar_html
 from trembr.paths import RESULTADOS, garantir
 from trembr.regiao import carregar_regiao
@@ -15,6 +15,7 @@ CAMADAS = [
     relevo,
     cidades,
     transporte,
+    protegidas,
 ]  # na ordem do atlas; cada camada nova da Fase 1 entra aqui
 
 

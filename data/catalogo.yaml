@@ -97,24 +97,30 @@ fontes:
     confirmado: false
 
   - id: cnuc_ucs
-    nome: Cadastro Nacional de Unidades de Conservação
+    nome: Cadastro Nacional de Unidades de Conservação (polígonos, ago/2025)
     camada: restricoes
     provedor: Ministério do Meio Ambiente (MMA)
-    url: https://www.gov.br/mma/
-    licenca: Pública
-    uso: Proteção integral = barreira; uso sustentável = custo extra de licenciamento
-    status: planejado
-    confirmado: false
+    url: https://dados.mma.gov.br/dataset/unidadesdeconservacao
+    licenca: Creative Commons Atribuição
+    uso: Proteção integral = barreira; uso sustentável = custo extra de licenciamento; APA = condicionantes
+    status: implementado
+    confirmado: true
+    notas: >-
+      Versões após 2025_08 só estão num SharePoint com login. O servidor não envia o certificado
+      intermediário; o download usa o repositório de certificados do sistema (truststore).
 
   - id: funai_ti
-    nome: Terras Indígenas
+    nome: Terras Indígenas (polígonos)
     camada: restricoes
     provedor: FUNAI
-    url: https://www.gov.br/funai/
+    url: https://geoserver.funai.gov.br/geoserver/Funai/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Funai:tis_poligonais&outputFormat=SHAPE-ZIP
     licenca: Pública
     uso: Barreira no traçado
-    status: planejado
+    status: implementado
     confirmado: false
+    notas: >-
+      O GeoServer recusa download automatizado: baixar no navegador e salvar em
+      data/raw/funai/tis_poligonais.zip. O leitor já existe (fontes/protegidas.py).
 
   # ---------------------------------------------------------------- infraestrutura existente
   - id: osm_brasil

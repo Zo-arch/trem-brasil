@@ -114,6 +114,19 @@ def transporte(
         console.print(f"[green]ok[/] {tipo}: {len(gpd.read_parquet(arq)):,} feições → {arq.name}")
 
 
+@dados.command("protegidas")
+def protegidas(forcar: bool = typer.Option(False, help="Baixar de novo mesmo com cache")) -> None:
+    """Unidades de conservação (CNUC/MMA) e terras indígenas (FUNAI, arquivo local)."""
+    import geopandas as gpd
+
+    from trembr.fontes.protegidas import preparar_areas_protegidas, resumo_ucs
+
+    arquivos = preparar_areas_protegidas(forcar=forcar, log=console.print)
+    console.print(resumo_ucs(gpd.read_parquet(arquivos["ucs"])))
+    for tipo, arq in arquivos.items():
+        console.print(f"[green]ok[/] {tipo}: {len(gpd.read_parquet(arq)):,} polígonos → {arq.name}")
+
+
 @app.command("atlas")
 def atlas(
     regiao: str = typer.Option("sudeste", help="Região em config/regioes.yaml"),

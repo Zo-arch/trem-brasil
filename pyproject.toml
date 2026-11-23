@@ -68,6 +68,7 @@ hypothesis = "*"
 ruff = "*"
 openpyxl = ">=3.1.5,<4"
 osmium-tool = ">=1.19.1,<2"
+truststore = ">=0.10.5,<0.11"
 
 [tool.pixi.pypi-dependencies]
 trembr = { path = ".", editable = true }
