@@ -117,11 +117,12 @@ fontes:
     licenca: Pública
     uso: Barreira no traçado
     status: implementado
-    confirmado: false
+    confirmado: true
     notas: >-
       O GeoServer recusa download automatizado (e às vezes o acesso direto pelo navegador).
       Baixar pela página oficial gov.br/funai/pt-br/atuacao/terras-indigenas/geoprocessamento-e-mapas
-      (nacional ou por UF) e salvar os .zip em data/raw/funai/. O leitor já existe.
+      (nacional ou por UF) e salvar os .zip em data/raw/funai/; a proveniência registra a página
+      e o hash. Sudeste (nov/2026): 52 TIs (SP 29, MG 16, RJ 4, ES 3).
 
   # ---------------------------------------------------------------- infraestrutura existente
   - id: osm_brasil

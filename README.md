@@ -76,7 +76,7 @@ que mostra tudo junto, com zoom e camadas que ligam e desligam (`pixi run atlas`
 </tr>
 <tr>
 <td align="center" width="33%"><a href="docs/img/atlas/04_transporte.png"><img src="docs/img/atlas/04_transporte.png" alt="Rodovias, ferrovias e aeroportos do Sudeste segundo o OpenStreetMap"></a><br><sub><b>4 · Transporte existente</b><br>rodovias, ferrovias em operação e desativadas, 82 aeroportos</sub></td>
-<td align="center" width="33%"><a href="docs/img/atlas/05_protegidas.png"><img src="docs/img/atlas/05_protegidas.png" alt="Unidades de conservação do Sudeste por grau de restrição"></a><br><sub><b>5 · Áreas protegidas</b><br>proteção integral cobre 3% da região, e a Serra do Mar é quase contínua</sub></td>
+<td align="center" width="33%"><a href="docs/img/atlas/05_protegidas.png"><img src="docs/img/atlas/05_protegidas.png" alt="Unidades de conservação do Sudeste por grau de restrição"></a><br><sub><b>5 · Áreas protegidas</b><br>1.629 UCs e 52 terras indígenas; a Serra do Mar é quase contínua</sub></td>
 </tr>
 </table>
 

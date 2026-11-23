@@ -80,9 +80,10 @@ def figura(regiao: Regiao, caminho: Path) -> Path:
     m = estilo.abrir(
         regiao,
         f"{regiao.nome}: áreas protegidas",
-        f"{estilo.fmt_int(len(u))} unidades de conservação no recorte · proteção integral cobre "
-        f"{estilo.fmt_dec(100 * f['protecao_integral'])}% da região; somando uso sustentável e "
-        f"APAs, {estilo.fmt_dec(100 * f['qualquer_uc'])}%",
+        f"{estilo.fmt_int(len(u))} unidades de conservação"
+        + (f" e {len(t)} terras indígenas" if t is not None else "")
+        + f" no recorte · proteção integral cobre {estilo.fmt_dec(100 * f['protecao_integral'])}% "
+        f"da região; todas as UCs, {estilo.fmt_dec(100 * f['qualquer_uc'])}%",
     )
     for classe, (_, cor) in CLASSES.items():
         u[u["classe"] == classe].to_crs(estilo.CRS_MAPA).plot(

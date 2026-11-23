@@ -44,7 +44,7 @@ um módulo em `src/trembr/fontes/`.
 | Uso do solo | mancha urbana, água, floresta | `ibge_areas_urbanizadas`, `mapbiomas` | ✅ mancha urbana (IBGE 2022) |
 | Transporte existente | rodovias, ferrovias, estações, aeroportos | `osm_brasil`, `ontl_ferrovias`, `dnit_snv` | ✅ OSM (conferência com DNIT e ONTL a fazer) |
 | Hidrografia | rios: cada travessia é uma ponte | `ana_bho` | |
-| Áreas protegidas | unidades de conservação, terras indígenas | `cnuc_ucs`, `funai_ti` | ✅ UCs; TIs dependem de download manual |
+| Áreas protegidas | unidades de conservação, terras indígenas | `cnuc_ucs`, `funai_ti` | ✅ (TIs por download manual da página da FUNAI) |
 | Geologia | litologia (custo de túnel e de corte) | `sgb_geologia` | |
 | Demanda observada | passageiros de avião e de ônibus por par de cidades | `anac_dados_estatisticos`, `antt_rodoviario_interestadual`, `ibge_ligacoes_rodoviarias` | |
 | Custos e validação | custos unitários; estudo oficial do TAV | `sicro`, `bm_china_hsr_2014`, `transit_costs`, `estudos_tav_rj_sp` | |

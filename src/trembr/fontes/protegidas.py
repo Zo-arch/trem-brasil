@@ -20,6 +20,7 @@ import geopandas as gpd
 import pandas as pd
 import pyogrio
 
+from trembr import proveniencia
 from trembr.crs import SIRGAS2000
 from trembr.fontes.baixar import baixar_grande
 from trembr.paths import BRUTOS, PROCESSADOS, garantir
@@ -85,6 +86,15 @@ def preparar_areas_protegidas(*, forcar: bool = False, log=print) -> dict[str, P
     _ucs(cnuc).to_parquet(arquivos["ucs"])
 
     zips = sorted(PASTA_TIS.glob("*.zip"))
+    for z in zips:  # baixados à mão: a proveniência registra a página de origem e o hash
+        if not proveniencia.caminho_proveniencia(z).exists():
+            proveniencia.registrar(
+                z,
+                fonte_id="funai_ti",
+                urls=[PAGINA_TIS],
+                licenca="Pública (FUNAI)",
+                extra={"obtencao": "download manual pelo navegador, na página oficial"},
+            )
     if zips:
         arquivos["tis"] = garantir(PROCESSADOS / "funai") / "terras_indigenas.parquet"
         _tis(zips).to_parquet(arquivos["tis"])
